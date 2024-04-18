@@ -39,11 +39,6 @@ Motor::Motor()
     RecordDirection();
 };
 
-void Motor::Process(double intended_angle, double motor_power, double lineAngle, double robotOrientation, Orbit &orbit, bool backGate, int goalAngle, double Chord, bool linePresent, int anglebisc, double homeAngle, int ballDistance, int ballAngle, bool defense)
-{
-    Move(intended_angle,motor_power,initialOrientation);
-}
-
 int Motor::projectionCalc(int anglebisc, int robotAngle)
 {
 
@@ -237,71 +232,6 @@ double Motor::FindCorrection(double orientation, double robotOrientation)
     return correction;
 }
 
-void Motor::Spin(double speed, int direction)
-{
-    Serial.println("hello");
-    speed *= 255;
-    if (digitalRead(39) == HIGH)
-    {
-        controlRL = direction < 0 ? LOW : HIGH;
-        controlRR = direction > 0 ? LOW : HIGH;
-        controlFL = direction < 0 ? LOW : HIGH;
-        controlFR = direction > 0 ? LOW : HIGH;
-        analogWrite(pinspeedFR, speed);
-        analogWrite(pinspeedFL, speed);
-        analogWrite(pinspeedRR, speed);
-        analogWrite(pinspeedRL, speed);
-        digitalWrite(pincontrolFLA, controlFLA);
-        digitalWrite(pincontrolFLB, controlFLB);
-        digitalWrite(pincontrolFRA, controlFRA);
-        digitalWrite(pincontrolFRB, controlFRB);
-        digitalWrite(pincontrolRRA, controlRRA);
-        digitalWrite(pincontrolRRB, controlRRB);
-        digitalWrite(pincontrolRLA, controlRLA);
-        digitalWrite(pincontrolRLB, controlRLB);
-    }
-    else
-    {
-        Stop();
-    }
-}
 
-void Motor::FinalSpin(double speed, int direction)
-{
-    speed *= 255;
-    if (digitalRead(39) == HIGH)
-    {
-        controlRL = direction < 0 ? LOW : HIGH;
-        controlRR = direction > 0 ? LOW : HIGH;
-        controlFL = direction < 0 ? LOW : HIGH;
-        controlFR = direction > 0 ? LOW : HIGH;
-        analogWrite(pinspeedFR, speed);
-        analogWrite(pinspeedFL, speed);
-        analogWrite(pinspeedRR, speed);
-        analogWrite(pinspeedRL, speed);
-        digitalWrite(pincontrolFLA, controlFLA);
-        digitalWrite(pincontrolFLB, controlFLB);
-        digitalWrite(pincontrolFRA, controlFRA);
-        digitalWrite(pincontrolFRB, controlFRB);
-        digitalWrite(pincontrolRRA, controlRRA);
-        digitalWrite(pincontrolRRB, controlRRB);
-        digitalWrite(pincontrolRLA, controlRLA);
-        digitalWrite(pincontrolRLB, controlRLB);
-        delay(300);
-        Stop();
-        delay(1000);
-    }
-    else
-    {
-        Stop();
-    }
-}
 
-double Motor::slowDown(int ballDistance, int ballAngle, double motorPower){
-    if(ballAngle<195 && ballAngle>165 && ballDistance < 20){
-        return 0.36;
-    }
-    else{
-        return motorPower;
-    }
-}
+

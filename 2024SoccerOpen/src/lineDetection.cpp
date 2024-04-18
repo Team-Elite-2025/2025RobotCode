@@ -160,7 +160,7 @@ double LineDetection::Process(int *calibrateVal)
         }
         // Serial.print("angle Diff: ");
         // Serial.println(angleDiff);
-        if (angleDiff > 120 && lineSwitch == false)
+        if (angleDiff > 100 && lineSwitch == false)
         {
             lineSwitch = true;
             angleDiff = 0;
@@ -189,7 +189,6 @@ double LineDetection::Process(int *calibrateVal)
             initialAngle = -1;
             avoidanceAngle = -1;
             lineSwitch = false;
-        
     }
     Serial.print("line: ");
     Serial.println(avoidanceAngle);
