@@ -5,7 +5,7 @@
 #include <trig.h>
 #include <orbit.h>
 #include <switches.h>
-// #include <compassSensor.h>
+#include <compassSensor.h>
 
 class Motor
 {
@@ -18,7 +18,7 @@ public:
     double FindCorrection(double orientation, double robotOrientation);
     double getOrientation();
     int projectionCalc(int anglebisc, int robotAngle);
-    // CompassSensor compassSensor;
+    CompassSensor compassSensor;
     int dirAngle;
     double correction;
     bool defenseStop;

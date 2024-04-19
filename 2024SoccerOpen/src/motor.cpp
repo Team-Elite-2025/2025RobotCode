@@ -82,7 +82,7 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
 
 
-    // FindCorrection(compassSensor.getOrientation(), robotOrientation);
+    FindCorrection(compassSensor.getOrientation(), robotOrientation);
     // add correction to account for rotation needed
 
 
@@ -194,14 +194,14 @@ double Motor::RecordDirection()
 {
     if (digitalRead(36) == LOW)
     {
-        // initialOrientation = compassSensor.getOrientation();
+        initialOrientation = compassSensor.getOrientation();
     }
     return initialOrientation;
 }
 
 double Motor::getOrientation()
 {
-    // return compassSensor.getOrientation();
+    return compassSensor.getOrientation();
 }
 
 double Motor::FindCorrection(double orientation, double robotOrientation)
@@ -209,7 +209,7 @@ double Motor::FindCorrection(double orientation, double robotOrientation)
 
     orientationVal = abs(orientation - robotOrientation);
 
-    // Serial.println(orientationVal);
+    Serial.println(orientationVal);
     if (orientationVal > 180)
     {
         orientationVal = 360 - orientationVal;
@@ -247,8 +247,8 @@ double Motor::FindCorrection(double orientation, double robotOrientation)
         correction = 1;
     }
 
-    Serial.println("Correction : ");
-    Serial.println(correction);
+    // Serial.println("Correction : ");
+    // Serial.println(correction);
 
     return correction;
 }
