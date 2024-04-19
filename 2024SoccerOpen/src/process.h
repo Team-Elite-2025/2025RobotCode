@@ -6,8 +6,9 @@
 #include <orbit.h>
 #include <Cam.h>
 #include <calibration.h>
-#ifndef OFFENSE_H
-#define OFFENSE_H
+
+#ifndef PROCESS_H
+#define PROCESS_H
 class Process
 {
 
@@ -21,5 +22,7 @@ class Process
         Cam cam;
         Orbit orbit;
         Calibration calbiration;
+        Switch switches;
+        double goal;
 };
 #endif

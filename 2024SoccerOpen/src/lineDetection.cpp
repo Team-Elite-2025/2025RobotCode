@@ -12,10 +12,17 @@ LineDetection::LineDetection()
     adc4.begin(27, 11, 12, 13);
     adc5.begin(14, 11, 12, 13);
     adc6.begin(15, 11, 12, 13);
-
+    int counter = 0;
+    for(int i = 22; i<48;i++){
+        sensorAngles[i] = counter * 7.5;
+        counter++;
+    }
+    for(int i = 0; i<22; i++){
+        sensorAngles[i] = counter * 7.5;
+        counter++;
+    }
     for (int i = 0; i < 48; i++)
     {
-        sensorAngles[i] = i * 7.5;
         cosValues[i] = cos(toRadians(sensorAngles[i]));
         sinValues[i] = sin(toRadians(sensorAngles[i]));
     }
@@ -57,11 +64,11 @@ int *LineDetection::GetValues()
         }
         lineValues[i] = val;
     }
-    for(int i = 40; i < 48; i++){
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(lineValues[i]);
-    }
+    // for(int i = 0; i < 8; i++){
+    //     Serial.print(i);
+    //     Serial.print(": ");
+    //     Serial.println(lineValues[i]);
+    // }
     return lineValues;
 };
 
@@ -76,7 +83,6 @@ double LineDetection::GetAngle(int *calibrateVal)
     {
         if (lineValues[i] < calibrateVal[i]+40)
         {
-
             lineValues[i] = 0;
             dotProduct[i] = 0;
         }
@@ -127,7 +133,6 @@ double LineDetection::GetAngle(int *calibrateVal)
     }
     if (anglebisc < 0)
         anglebisc = 360 + anglebisc;
-
     return anglebisc; // returns direction the line is in
 }
 
@@ -158,8 +163,6 @@ double LineDetection::Process(int *calibrateVal)
         {
             angleDiff = 360 - angleDiff;
         }
-        // Serial.print("angle Diff: ");
-        // Serial.println(angleDiff);
         if (angleDiff > 100 && lineSwitch == false)
         {
             lineSwitch = true;
@@ -168,12 +171,11 @@ double LineDetection::Process(int *calibrateVal)
         if (lineSwitch == true)
         {
             avoidanceAngle = anglebisc;
-            if (angleDiff > 120)
+            if (angleDiff > 100)
             {
                 lineSwitch = false;
             }
         }
-        // Serial.println(lineSwitch);
         if (lineSwitch == false)
         {
             avoidanceAngle = anglebisc + 180;
@@ -185,12 +187,11 @@ double LineDetection::Process(int *calibrateVal)
     }
     else if (linepresent == false)
     {
-
             initialAngle = -1;
             avoidanceAngle = -1;
             lineSwitch = false;
     }
-    Serial.print("line: ");
-    Serial.println(avoidanceAngle);
+    // Serial.print("line: ");
+    // Serial.println(avoidanceAngle);
     return avoidanceAngle;
 };

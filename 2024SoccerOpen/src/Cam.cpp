@@ -11,7 +11,6 @@ Cam::Cam()
   yellowGoal = 0;
   blueGoal = 0;
   buffer = "";
-  dissapeared = false;
 }
 double Cam::CamCalc()
 {
@@ -53,7 +52,7 @@ double Cam::CamCalc()
       {
         ballDistance = strtod(buffer.c_str(), NULL);
         ballDistance = FilterAngle(ballDistance, previousBallDistance);
-        ballDistance = 6.8 * exp(0.019 * ballDistance);
+        ballDistance = 81.9273 * exp(0.00425389 * ballDistance) -92.1804;
 
         Serial.print("Distance: ");
         Serial.println(ballDistance);

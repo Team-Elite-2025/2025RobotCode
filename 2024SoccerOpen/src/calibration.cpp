@@ -24,7 +24,7 @@ if(calVal[i]<lineVal[i])
 }
 
 void Calibration::calState(){
-    if(digitalRead(40) == LOW){
+    if(switches.calibration()){
         calibrate(lineDetection.GetValues());
     }
 }

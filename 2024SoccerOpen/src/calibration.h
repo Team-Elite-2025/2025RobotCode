@@ -1,4 +1,9 @@
+#ifndef CALIBRATION_H
+#define CALIBRATION_H
+
+
 #include <lineDetection.h>
+#include <switches.h>
 
 
 
@@ -13,4 +18,6 @@ int *calVal;
 
 private:
 LineDetection lineDetection;
+Switch switches;
 };
+#endif

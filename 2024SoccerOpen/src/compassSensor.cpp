@@ -1,11 +1,11 @@
 #include <compassSensor.h>
 CompassSensor::CompassSensor()
 {
-  bno = Adafruit_BNO055(55, 0x28);
+  bno = Adafruit_BNO055(55, 0x28, &Wire2);
   if(!bno.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
-    //Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }  
    bno.setExtCrystalUse(true);

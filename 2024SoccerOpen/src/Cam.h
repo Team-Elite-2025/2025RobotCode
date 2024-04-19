@@ -13,9 +13,6 @@ class Cam {
         double yellowGoal;
         double blueGoal;
         double ballDistance;
-        double yellowGoalDistance;
-        double blueGoalDistance;
-        bool tooFar;
 double validDistance;
         double CamCalc();
         double FilterAngle(double angle, double validAngle);
@@ -24,7 +21,6 @@ double validDistance;
         std::string buffer;
     private:
         char read;
-        bool dissapeared;
         double previousBallAngle;
         double previousBlueAngle;
         double previousYellowAngle;

@@ -6,19 +6,19 @@
 Motor::Motor()
 {
     // corresponding pin values on teensy
-    pinspeedRL = 2;
+    pinspeedRL = 4;
     pinspeedRR = 3;
-    pinspeedFL = 4;
+    pinspeedFL = 2;
     pinspeedFR = 5;
 
-    pincontrolRLA = 22;
+    pincontrolRLA = 18;
     pincontrolRRA = 20;
-    pincontrolFLA = 18;
+    pincontrolFLA = 22;
     pincontrolFRA = 9;
 
-    pincontrolRLB = 23;
+    pincontrolRLB = 19;
     pincontrolRRB = 21;
-    pincontrolFLB = 19;
+    pincontrolFLB = 23;
     pincontrolFRB = 10;
 
     defenseStop = false;
@@ -82,14 +82,11 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
 
 
-    FindCorrection(compassSensor.getOrientation(), robotOrientation);
+    // FindCorrection(compassSensor.getOrientation(), robotOrientation);
     // add correction to account for rotation needed
 
 
-    // Serial.println(powerFR);
-    // Serial.println(powerFL);
-    // Serial.println(powerRR);
-    // Serial.println(powerRL);
+
     powerFR = powerFR / max_power;
     powerFL = powerFL / max_power;
     powerRR = powerRR / max_power;
@@ -99,27 +96,45 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     powerFL += correction;
     powerRR += correction;
     powerRL += correction;
-
-    controlRL = powerRL < 0 ? LOW : HIGH;
+    // Serial.println(powerFR);
+    // Serial.println(powerFL);
+    // Serial.println(powerRR);
+    // Serial.println(powerRL);
+    controlRL = powerRL > 0 ? LOW : HIGH;
     controlRR = powerRR > 0 ? LOW : HIGH;
-    controlFL = powerFL < 0 ? LOW : HIGH;
+    controlFL = powerFL > 0 ? LOW : HIGH;
     controlFR = powerFR > 0 ? LOW : HIGH;
-
     if(controlRL == LOW){
-        controlRLA == LOW;
-        controlRLB == HIGH;
+        controlRLA = LOW;
+        controlRLB = HIGH;
+    }
+    else{
+        controlRLA = HIGH;
+        controlRLB = LOW;
     }
     if(controlRR == LOW){
-        controlRRA == LOW;
-        controlRRB == HIGH;
+        controlRRA = LOW;
+        controlRRB = HIGH;
+    }
+    else{
+        controlRRA = HIGH;
+        controlRRB = LOW;
+    }
+    if(controlFR == LOW){
+        controlFRA = LOW;
+        controlFRB = HIGH;
+    }
+    else{
+        controlFRA = HIGH;
+        controlFRB = LOW;
     }
     if(controlFL == LOW){
-        controlFLA == LOW;
-        controlFLB == HIGH;
+        controlFLA = LOW;
+        controlFLB = HIGH;
     }
-    if(controlFL == LOW){
-        controlFLA == LOW;
-        controlFLB == HIGH;
+    else{
+        controlFLA = HIGH;
+        controlFLB = LOW;
     }
 
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
@@ -135,13 +150,11 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     int intspeedRR = (int)((speedRR * multiplier) * motor_power);
     int intspeedRL = (int)((speedRL * multiplier) * motor_power);
 
-    int motor_switch = 0;
-    motor_switch = digitalRead(38);
     if (defenseStop)
     {
         Stop();
     }
-    else if (motor_switch == HIGH)
+    else if (switches.start())
     {
         analogWrite(pinspeedFR, intspeedFR);
         analogWrite(pinspeedFL, intspeedFL);
@@ -164,23 +177,31 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
 
 void Motor::Stop()
 {
-    analogWrite(pinspeedFR, 0);
-    analogWrite(pinspeedFL, 0);
-    analogWrite(pinspeedRL, 0);
-    analogWrite(pinspeedRR, 0);
+        analogWrite(pinspeedFR, 0);
+        analogWrite(pinspeedFL, 0);
+        analogWrite(pinspeedRR, 0);
+        analogWrite(pinspeedRL, 0);
+        digitalWrite(pincontrolFLA, HIGH);
+        digitalWrite(pincontrolFLB, LOW);
+        digitalWrite(pincontrolFRA, HIGH);
+        digitalWrite(pincontrolFRB, LOW);
+        digitalWrite(pincontrolRRA, HIGH);
+        digitalWrite(pincontrolRRB, LOW);
+        digitalWrite(pincontrolRLA, HIGH);
+        digitalWrite(pincontrolRLB, LOW);
 }
 double Motor::RecordDirection()
 {
     if (digitalRead(36) == LOW)
     {
-        initialOrientation = compassSensor.getOrientation();
+        // initialOrientation = compassSensor.getOrientation();
     }
     return initialOrientation;
 }
 
 double Motor::getOrientation()
 {
-    return compassSensor.getOrientation();
+    // return compassSensor.getOrientation();
 }
 
 double Motor::FindCorrection(double orientation, double robotOrientation)
