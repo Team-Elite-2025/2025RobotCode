@@ -9,6 +9,9 @@ class CompassSensor {
     public: 
         CompassSensor();
         int getOrientation();
+        bool calibrated;
+        
+        void calibrate();
 
 
     private:

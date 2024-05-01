@@ -7,6 +7,8 @@
 #include <switches.h>
 #include <compassSensor.h>
 
+
+
 class Motor
 {
 

@@ -36,7 +36,7 @@ Motor::Motor()
     pinMode(pincontrolRRB, OUTPUT);
     pinMode(pincontrolRLB, OUTPUT);
     max_power = 0;
-    RecordDirection();
+
 };
 
 int Motor::projectionCalc(int anglebisc, int robotAngle)
@@ -102,7 +102,7 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     // Serial.println(powerRL);
     controlRL = powerRL > 0 ? LOW : HIGH;
     controlRR = powerRR > 0 ? LOW : HIGH;
-    controlFL = powerFL > 0 ? LOW : HIGH;
+    controlFL = powerFL < 0 ? LOW : HIGH;
     controlFR = powerFR > 0 ? LOW : HIGH;
     if(controlRL == LOW){
         controlRLA = LOW;
@@ -201,6 +201,7 @@ double Motor::RecordDirection()
 
 double Motor::getOrientation()
 {
+    Serial.println(compassSensor.getOrientation());
     return compassSensor.getOrientation();
 }
 
@@ -247,8 +248,8 @@ double Motor::FindCorrection(double orientation, double robotOrientation)
         correction = 1;
     }
 
-    // Serial.println("Correction : ");
-    // Serial.println(correction);
+    Serial.println("Correction : ");
+    Serial.println(correction);
 
     return correction;
 }

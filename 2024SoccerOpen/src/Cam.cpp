@@ -14,7 +14,7 @@ Cam::Cam()
 }
 double Cam::CamCalc()
 {
-  Serial.print(Serial2.available());
+  // Serial.print(Serial2.available());
   if (Serial2.available() > 0)
   {
     for (int i = 0; i < Serial2.available(); i++)

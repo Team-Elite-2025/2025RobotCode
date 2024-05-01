@@ -6,7 +6,7 @@ Process::Process()
 
 void Process::offense(double motorPower)
 {
-    calbiration.calState();
+    calbiration.calState(motor);
     double lineAngle = lineDetection.Process(calbiration.calVal);
     if (lineDetection.linepresent)
     {

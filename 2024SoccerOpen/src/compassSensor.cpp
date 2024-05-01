@@ -2,17 +2,31 @@
 CompassSensor::CompassSensor()
 {
   bno = Adafruit_BNO055(55, 0x28, &Wire2);
-  if(!bno.begin())
+  if(bno.begin())
   {
-    /* There was a problem detecting the BNO055 ... check your connections */
-    while(1){
-          Serial.println("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-          delay(1000);
-    }
-  }  
    bno.setExtCrystalUse(true);
+  } 
+  else{
+    /* There was a problem detecting the BNO055 ... check your connections */
+        while(1){
+          Serial.println("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    }
+  }
 };
+void CompassSensor::calibrate(){
+    uint8_t system, gyro, accel, mag = 0;
 
+    while (mag < 3) {
+      bno.getCalibration(&system, &gyro, &accel, &mag);
+      Serial.println("Calibrate your compass sensor!");
+      Serial.println(String(mag) + "/3 magnetometer");
+      // Serial.println(String(gyro) + "/3 gyroscope");
+      Serial.println();
+      delay(100);
+    }
+    calibrated = true;
+    Serial.print(calibrated);
+};
 int CompassSensor::getOrientation()
 {
 bno.getEvent(&event);

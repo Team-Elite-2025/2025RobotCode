@@ -36,8 +36,8 @@ double Orbit::CalculateRobotAngle(double ballAngle, double goalAngle, double dis
         {
             robotAngle -= 360;
         }
-        // Serial.print("robot Angle: ");
-        // Serial.println(robotAngle);
+        Serial.print("robot Angle: ");
+        Serial.println(robotAngle);
         return robotAngle;
     
 }
@@ -73,7 +73,6 @@ double Orbit::GetToSpinShotPosition(bool linePresent, int goalAngle, int lineAng
         else if(lineAngle <45 || lineAngle>315)
         {
             inPos = true;
-            Serial.println("nigga");
         }
         else{
             robotAngle = 0;
