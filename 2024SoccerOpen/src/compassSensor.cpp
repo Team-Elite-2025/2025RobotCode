@@ -4,7 +4,7 @@ CompassSensor::CompassSensor()
   bno = Adafruit_BNO055(55, 0x28, &Wire2);
   if(bno.begin())
   {
-   bno.setExtCrystalUse(true);
+  //  bno.setExtCrystalUse(true);
   } 
   else{
     /* There was a problem detecting the BNO055 ... check your connections */

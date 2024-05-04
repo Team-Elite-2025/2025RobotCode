@@ -51,9 +51,12 @@ double Cam::CamCalc()
       else if (read == 'a')
       {
         ballDistance = strtod(buffer.c_str(), NULL);
-        ballDistance = FilterAngle(ballDistance, previousBallDistance);
-        ballDistance = 81.9273 * exp(0.00425389 * ballDistance) -92.1804;
-
+        if(ballDistance<480){
+          ballDistance = 563.356*exp(0.000285648*ballDistance) - 570.65;
+        }
+        else{
+          ballDistance = 0.219569*ballDistance-17.2009;
+        }
         Serial.print("Distance: ");
         Serial.println(ballDistance);
         buffer = "";

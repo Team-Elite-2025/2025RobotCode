@@ -26,6 +26,6 @@ if(calVal[i]<lineVal[i])
 void Calibration::calState(Motor &motor){
     if(switches.calibration()){
         calibrate(lineDetection.GetValues());
-        // motor.RecordDirection();
+        motor.RecordDirection();
     }
 }

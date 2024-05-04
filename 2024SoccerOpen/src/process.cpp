@@ -8,7 +8,7 @@ void Process::offense(double motorPower)
 {
     calbiration.calState(motor);
     double lineAngle = lineDetection.Process(calbiration.calVal);
-    if (lineDetection.linepresent)
+    if (lineDetection.linepresent && lineDetection.Chord()>0.8)
     {
         motor.Move(lineAngle, motorPower, motor.initialOrientation);
     }
@@ -23,6 +23,11 @@ void Process::offense(double motorPower)
         {
             goal = cam.blueGoal;
         }
-        motor.Move(orbit.CalculateRobotAngle(cam.ball, goal, cam.ballDistance), motorPower, motor.initialOrientation);
+        if(lineDetection.linepresent){
+            motor.Move(motor.projectionCalc(lineAngle, orbit.CalculateRobotAngle(cam.ball, goal, cam.ballDistance)), motorPower, motor.initialOrientation);
+        }
+        else{
+            motor.Move(orbit.CalculateRobotAngle(cam.ball, goal, cam.ballDistance), motorPower, motor.initialOrientation);
+        }
     }
 }

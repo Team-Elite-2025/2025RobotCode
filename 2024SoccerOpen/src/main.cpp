@@ -6,7 +6,6 @@
 unsigned long myTime = 0;
 
 Process process;
-Switch switches;
 CompassSensor compassSensor;
 
 
@@ -14,12 +13,14 @@ CompassSensor compassSensor;
 void setup() {
   Serial.begin(9600);
   Serial2.begin(19200);
-  // compassSensor.calibrate();
+  compassSensor.calibrate();
+
 }
 
 void loop() {
-    // process.offense(0.2);
-    Serial.println(compassSensor.getOrientation());
-    // delay(1000);
+    process.offense(0.25);
+    delay(1000);
+
+
 }
 

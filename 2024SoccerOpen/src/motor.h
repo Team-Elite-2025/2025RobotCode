@@ -6,6 +6,7 @@
 #include <orbit.h>
 #include <switches.h>
 #include <compassSensor.h>
+#include <PID_v1.h>
 
 
 
@@ -76,6 +77,10 @@ private:
   double robotAngleY;
   bool projection;
   int goalAAngleSide;
+
+  double Setpoint, Input, Output;
+  double Kp, Ki, Kd;
+  PID& myPID;
 };
 
 #endif

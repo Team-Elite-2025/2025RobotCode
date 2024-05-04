@@ -8,8 +8,9 @@ Orbit::Orbit()
 double Orbit::CalculateRobotAngle(double ballAngle, double goalAngle, double distance)
 {
 
-
-        double dampenVal = min(1, 4 * exp(-0.1 * distance));
+        distance = distance/109;
+        double dampenVal = min(1, 0.02 * exp(5.5 * distance));
+        dampenVal = 1-dampenVal;
         // Serial.print("dampen val: ");
         // Serial.println(dampenVal);
         double newballAngle = ballAngle > 180 ? (360 - ballAngle) : ballAngle;
@@ -31,7 +32,7 @@ double Orbit::CalculateRobotAngle(double ballAngle, double goalAngle, double dis
         // orbitvalue = orbitvalue * dampenVal;
         // Serial.print("Orbit val after: ");
         // Serial.println(orbitvalue);
-        robotAngle = ballAngle + (ballAngle > 180 ? -1 : 1) * (orbitvalue);
+        robotAngle = ballAngle + (ballAngle > 180 ? -1 : 1) * (orbitvalue*dampenVal);
         if (robotAngle > 360)
         {
             robotAngle -= 360;

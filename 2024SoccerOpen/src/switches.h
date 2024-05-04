@@ -11,5 +11,8 @@ class Switch
     bool switchRole();
     bool calibration();
     private:
+    int ledPin = 0;
+    int recieverPin = 41;
+    bool lightgate();
 };
 #endif

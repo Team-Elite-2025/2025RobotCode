@@ -37,6 +37,15 @@ Motor::Motor()
     pinMode(pincontrolRLB, OUTPUT);
     max_power = 0;
 
+
+    //PID Loop
+    Kp=2, Ki=0, Kd=0;
+    PID tempPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+    myPID = tempPID;
+    myPID.SetMode(AUTOMATIC);
+
+    Setpoint = 0;
+
 };
 
 int Motor::projectionCalc(int anglebisc, int robotAngle)
@@ -208,9 +217,10 @@ double Motor::getOrientation()
 double Motor::FindCorrection(double orientation, double robotOrientation)
 {
 
+    
     orientationVal = abs(orientation - robotOrientation);
 
-    Serial.println(orientationVal);
+    
     if (orientationVal > 180)
     {
         orientationVal = 360 - orientationVal;
@@ -227,7 +237,11 @@ double Motor::FindCorrection(double orientation, double robotOrientation)
     {
         orientationVal = -1 * orientationVal;
     }
-
+    Serial.print("OrientationVal: ");
+    Serial.println(orientationVal);
+    Input = orientationVal;
+    myPID.Compute();
+    Serial.println(Output);
     correction = -1 * (sin(toRadians(orientationVal)));
     correction *= 0.55;
 
@@ -248,8 +262,8 @@ double Motor::FindCorrection(double orientation, double robotOrientation)
         correction = 1;
     }
 
-    Serial.println("Correction : ");
-    Serial.println(correction);
+    // Serial.println("Correction : ");
+    // Serial.println(correction);
 
     return correction;
 }

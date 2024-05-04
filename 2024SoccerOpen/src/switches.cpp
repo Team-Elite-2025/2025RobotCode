@@ -3,7 +3,11 @@
 
 Switch::Switch()
 {
-
+  pinMode(ledPin, OUTPUT);
+  pinMode(recieverPin, INPUT);
+  analogWriteFrequency(ledPin,38000);
+  delay(100);
+  analogWrite(ledPin,127);
 }
 
 bool Switch::start(){
@@ -29,4 +33,12 @@ bool Switch::calibration(){
         return true;
     }
     return false;
+}
+bool Switch::lightgate(){
+    if(analogRead(recieverPin) < 700){
+        return true;
+    }
+    else{
+        return false;
+    }
 }

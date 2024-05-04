@@ -113,10 +113,6 @@ double LineDetection::GetAngle(int *calibrateVal)
         }
     }
 
-    // Serial.print("First Angle: ");
-    // Serial.println(firstAngle);
-    // Serial.print("Second Angle: ");
-    // Serial.println(secondAngle);
 
     totalCos = cosValues[firstAngle] + cosValues[secondAngle];
     totalSin = sinValues[firstAngle] + sinValues[secondAngle];
