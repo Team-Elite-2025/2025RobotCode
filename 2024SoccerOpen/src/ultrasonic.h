@@ -8,15 +8,19 @@ class Ultrasonic
 
     public:
         Ultrasonic();
-        int sensor1();
-        int sensor2();
-        int sensor3();
-        int sensor4();
+        int frontSensor();
+        int backSensor();
+        int leftSensor();
+        int rightSensor();
+        int getX();
+        int getY();
     private:
         int echoPin;
         int trig1Pin;
         int trig2Pin;
         int trig3Pin;
         int trig4Pin;
+        int prevX;
+        int prevY;
 };
 #endif

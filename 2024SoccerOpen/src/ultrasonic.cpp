@@ -13,7 +13,7 @@ Ultrasonic::Ultrasonic(){
     pinMode(trig4Pin, OUTPUT);
 }
 
-int Ultrasonic::sensor1(){ // Left
+int Ultrasonic::leftSensor(){ // Left
     digitalWrite(trig1Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig1Pin, HIGH);
@@ -33,7 +33,7 @@ int Ultrasonic::sensor1(){ // Left
         return distance;
     }
 }
-int Ultrasonic::sensor2(){ // Back
+int Ultrasonic::backSensor(){ // Back
     digitalWrite(trig2Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig2Pin, HIGH);
@@ -52,7 +52,7 @@ int Ultrasonic::sensor2(){ // Back
         return distance;
     }
 }
-int Ultrasonic::sensor3(){
+int Ultrasonic::frontSensor(){ // FRONT
     digitalWrite(trig3Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig3Pin, HIGH);
@@ -71,7 +71,7 @@ int Ultrasonic::sensor3(){
         return distance;
     }
 }
-int Ultrasonic::sensor4(){ //RIGHT
+int Ultrasonic::rightSensor(){ //RIGHT
     digitalWrite(trig4Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig4Pin, HIGH);
@@ -89,4 +89,20 @@ int Ultrasonic::sensor4(){ //RIGHT
         Serial.println(" cm");
         return distance;
     }
+    
+}
+int Ultrasonic::getX(){
+    if(leftSensor() + rightSensor() < 187 && leftSensor() + rightSensor() > 177)
+        prevX = (leftSensor()-rightSensor())/2.0;
+    return prevX;
+}
+int Ultrasonic::getY(){
+    if(getX() <-30 || getX() > 30) {
+        if(backSensor() + frontSensor() < 187 && backSensor() + frontSensor() > 177)
+            prevY = (backSensor()-frontSensor())/2.0;
+    } else {
+        if(backSensor() + frontSensor() < 177 && backSensor() + frontSensor() > 167)
+            prevY = (backSensor()-frontSensor())/2.0;
+    }
+    return prevY;
 }
