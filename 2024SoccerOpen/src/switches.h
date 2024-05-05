@@ -4,15 +4,16 @@
 
 class Switch
 {
-    public:
+public:
     Switch();
     bool start();
     bool switchSide();
     bool switchRole();
     bool calibration();
-    private:
+    bool lightgate();
+
+private:
     int ledPin = 0;
     int recieverPin = 41;
-    bool lightgate();
 };
 #endif

@@ -13,11 +13,13 @@ LineDetection::LineDetection()
     adc5.begin(14, 11, 12, 13);
     adc6.begin(15, 11, 12, 13);
     int counter = 0;
-    for(int i = 22; i<48;i++){
+    for (int i = 22; i < 48; i++)
+    {
         sensorAngles[i] = counter * 7.5;
         counter++;
     }
-    for(int i = 0; i<22; i++){
+    for (int i = 0; i < 22; i++)
+    {
         sensorAngles[i] = counter * 7.5;
         counter++;
     }
@@ -81,7 +83,7 @@ double LineDetection::GetAngle(int *calibrateVal)
 
     for (int i = 0; i < 48; i++)
     {
-        if (lineValues[i] < calibrateVal[i]+40)
+        if (lineValues[i] < calibrateVal[i] + 40)
         {
             lineValues[i] = 0;
             dotProduct[i] = 0;
@@ -112,7 +114,6 @@ double LineDetection::GetAngle(int *calibrateVal)
             }
         }
     }
-
 
     totalCos = cosValues[firstAngle] + cosValues[secondAngle];
     totalSin = sinValues[firstAngle] + sinValues[secondAngle];
@@ -183,9 +184,9 @@ double LineDetection::Process(int *calibrateVal)
     }
     else if (linepresent == false)
     {
-            initialAngle = -1;
-            avoidanceAngle = -1;
-            lineSwitch = false;
+        initialAngle = -1;
+        avoidanceAngle = -1;
+        lineSwitch = false;
     }
     // Serial.print("line: ");
     // Serial.println(avoidanceAngle);
