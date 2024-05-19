@@ -9,8 +9,8 @@ class Ultrasonic
 
 public:
     Ultrasonic();
-    void localization(int correction);
-    void localizationDefense(int correction);
+    void localization(double correction);
+    void localizationDefense(double correction);
     int getXCoordinate();
     int getYCoordinate();
     int getYCoordinateDefense();
@@ -19,8 +19,8 @@ public:
     int leftSensor();
     int rightSensor();
 private:
-    int getX(int correction);
-    int getY(int correction);
+    int getX(double correction);
+    int getY(double correction);
     int echoPin;
     int trig1Pin;
     int trig2Pin;

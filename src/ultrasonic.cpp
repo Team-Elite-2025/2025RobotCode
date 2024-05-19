@@ -108,10 +108,10 @@ int Ultrasonic::rightSensor()
         return distance;
     }
 }
-void Ultrasonic::localization(int correction){
+void Ultrasonic::localization(double correction){
     getY(correction);
 }
-void Ultrasonic::localizationDefense(int correction){
+void Ultrasonic::localizationDefense(double correction){
     getX(correction);
     backDefense = backSensor();
     if(correction <= 0.25){
@@ -128,7 +128,7 @@ int Ultrasonic::getYCoordinate(){
 int Ultrasonic::getYCoordinateDefense(){
     return prevYDefense;
 }
-int Ultrasonic::getX(int correction) // Range: -70 - +70
+int Ultrasonic::getX(double correction) // Range: -70 - +70
 {   
 
     if(allowRight){
@@ -145,7 +145,7 @@ int Ultrasonic::getX(int correction) // Range: -70 - +70
         prevX = (left - right) / 2.0;
     return prevX;
 }
-int Ultrasonic::getY(int correction) // Range: -85 - +85
+int Ultrasonic::getY(double correction) // Range: -85 - +85
 {
     getX(correction);
     
@@ -169,7 +169,7 @@ int Ultrasonic::getY(int correction) // Range: -85 - +85
     else
     {
         // 5.2 Doff
-        if (total <= (245 - 11.2) && total >= (225 - 11.2))
+        if (total <= (245 - 11.2) && total >= (225 - 11.2) && correction <= 0.25)
             prevY = (back - front) / 2.0;
     }
     return prevY;
