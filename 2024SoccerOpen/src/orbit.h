@@ -12,7 +12,7 @@ public:
     Orbit();
     double robotAngle;
     double CalculateRobotAngle(double ballAngle, double goalAngle, double distance);
-    double GetToPosition(int x, int y);
+    double GetToPosition(int targetX, int targetY, int currentX, int currentY);
     bool inPos;
     bool inOrientation;
 

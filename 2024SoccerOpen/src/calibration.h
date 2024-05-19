@@ -11,7 +11,7 @@ class Calibration
 public:
     Calibration();
     void calibrate(int *lineVal);
-    void calState(Motor &Motor);
+    void calState(Motor &Motor, LineDetection &LineDetection);
     int *calVal;
 
 private:

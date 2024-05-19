@@ -11,7 +11,7 @@ int Defense::defenseCalc(int ballAngle, int goalAngle)
     {
         angleDiff = 360 - angleDiff;
     }
-    if (angleDiff <= 180 && angleDiff > 168)
+    if (angleDiff <= 180 && angleDiff > 160)
     {
         defenseAngle = -1;
     }
@@ -27,6 +27,8 @@ int Defense::defenseCalc(int ballAngle, int goalAngle)
             defenseAngle = calculation.projectionCalc(0, defenseAngle);
         }
     }
+    Serial.print("defense Angle: ");
+    Serial.println(defenseAngle);
     return defenseAngle;
 }
 

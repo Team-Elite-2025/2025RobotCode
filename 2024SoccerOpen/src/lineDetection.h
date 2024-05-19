@@ -16,6 +16,8 @@ public:
     bool linepresent;
     int avoidanceAngle;
     double Chord();
+    bool outOfBounds;
+    bool lineSwitch;
 
 private:
     int *lineValues;
@@ -25,12 +27,10 @@ private:
     MCP3008 adc4;
     MCP3008 adc5;
     MCP3008 adc6;
-    bool lineSwitch;
     double sensorAngles[48];
     double sinValues[48];
     double cosValues[48];
     int sensorAngle;
-    bool outOfBounds;
     int currentAngle;
     int angleDiff;
 };

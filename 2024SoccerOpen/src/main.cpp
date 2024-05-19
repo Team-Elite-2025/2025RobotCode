@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <process.h>
 
-int motorPower;
+double motorPower;
 
 Process process;
 CompassSensor compassSensor;
@@ -21,4 +21,7 @@ void loop()
     process.offense(motorPower);
   else
     process.defense(motorPower);
+
+// delay(500);
 }
+

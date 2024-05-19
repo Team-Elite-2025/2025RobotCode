@@ -22,11 +22,12 @@ void Calibration::calibrate(int *lineVal)
     }
 }
 
-void Calibration::calState(Motor &motor)
+void Calibration::calState(Motor &motor, LineDetection &lineDetection)
 {
     if (switches.calibration())
     {
         calibrate(lineDetection.GetValues());
         motor.RecordDirection();
+        lineDetection.lineSwitch = false;
     }
 }

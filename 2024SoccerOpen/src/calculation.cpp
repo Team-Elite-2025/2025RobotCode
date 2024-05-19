@@ -5,7 +5,20 @@ Calculation::Calculation()
 }
 int Calculation::projectionCalc(int anglebisc, int robotAngle)
 {
-    int lineAngle = anglebisc + 90;
+    int lineAngle = anglebisc + 180;
+    if (lineAngle > 360)
+    {
+        lineAngle = lineAngle - 360;
+    }
+    int angleDiff = abs(robotAngle-lineAngle);
+    if (angleDiff > 180)
+    {
+        angleDiff = 360 - angleDiff;
+    }
+    if(angleDiff > 90){
+        return robotAngle;
+    }
+    lineAngle = anglebisc + 90;
     if (lineAngle > 360)
     {
         lineAngle = lineAngle - 360;

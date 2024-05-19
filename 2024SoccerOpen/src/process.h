@@ -30,6 +30,7 @@ private:
     Goal goal;
     Calculation calculation;
     Defense goalie;
+    Ultrasonic ultrasonic;
     double getGoal();
     void smoothMove(int moveAngle, int lineAngle, double motorPower, int orientation);
     int getOrientationOffense();

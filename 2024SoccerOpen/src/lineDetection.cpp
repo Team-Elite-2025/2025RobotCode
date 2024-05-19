@@ -6,7 +6,7 @@ LineDetection::LineDetection()
 {
     // Constructor
     lineValues = new int[48];
-    adc1.begin(0, 11, 12, 13);
+    adc1.begin(32, 11, 12, 13);
     adc2.begin(1, 11, 12, 13);
     adc3.begin(26, 11, 12, 13);
     adc4.begin(27, 11, 12, 13);
@@ -184,9 +184,14 @@ double LineDetection::Process(int *calibrateVal)
     }
     else if (linepresent == false)
     {
+        if(lineSwitch){
+            outOfBounds = true;
+        }
+        else{
+            outOfBounds = false;
+            avoidanceAngle = -1;
+        }
         initialAngle = -1;
-        avoidanceAngle = -1;
-        lineSwitch = false;
     }
     // Serial.print("line: ");
     // Serial.println(avoidanceAngle);

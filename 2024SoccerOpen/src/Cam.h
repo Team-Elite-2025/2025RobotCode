@@ -14,11 +14,8 @@ public:
         double yellowGoal;
         double blueGoal;
         double ballDistance;
-        double validDistance;
         double CamCalc();
         double FilterAngle(double angle, double validAngle);
-        double ComplimentaryFilterAngle(double angle, double validAngle);
-        double ComplimentaryFilterDistance(double dist, double validDist);
         std::string buffer;
 
 private:

@@ -44,12 +44,14 @@ bool Switch::calibration()
 }
 bool Switch::lightgate()
 {
+    Serial.print("Lightgate: ");
+    Serial.println(analogRead(recieverPin));
     if (analogRead(recieverPin) < 700)
     {
-        return true;
+        return false;
     }
     else
     {
-        return false;
+        return true;
     }
 }

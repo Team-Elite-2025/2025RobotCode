@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 
-Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.34, 0, 0.003, REVERSE)
+Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.003, REVERSE)
 {
     // corresponding pin values on teensy
     pinspeedRL = 4;
@@ -54,10 +54,10 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     controlFL = 0;
     controlRL = 0;
 
-    powerFR = sin(toRadians(intended_angle - 45));
-    powerRR = sin(toRadians(intended_angle - 135));
-    powerRL = sin(toRadians(intended_angle - 225));
-    powerFL = sin(toRadians(intended_angle - 315));
+    powerFR = sin(toRadians(intended_angle - 52));
+    powerRR = sin(toRadians(intended_angle - 128));
+    powerRL = sin(toRadians(intended_angle - 232));
+    powerFL = sin(toRadians(intended_angle - 308));
     // find max_power among motors to scale
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
 
@@ -77,6 +77,18 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     // Serial.println(powerFL);
     // Serial.println(powerRR);
     // Serial.println(powerRL);
+
+
+
+    max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
+
+    powerFR = powerFR / max_power;
+    powerFL = powerFL / max_power;
+    powerRR = powerRR / max_power;
+    powerRL = powerRL / max_power;
+
+
+
 
     controlRL = powerRL > 0 ? LOW : HIGH;
     controlRR = powerRR > 0 ? LOW : HIGH;
@@ -123,20 +135,21 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
         controlFLB = LOW;
     }
 
-    max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
-
-    speedFR = abs(powerFR) / max_power;
-    speedFL = abs(powerFL) / max_power;
-    speedRR = abs(powerRR) / max_power;
-    speedRL = abs(powerRL) / max_power;
-
+    speedFR = abs(powerFR);
+    speedFL = abs(powerFL);
+    speedRR = abs(powerRR);
+    speedRL = abs(powerRL);
     int multiplier = 255;
 
     int intspeedFR = (int)((speedFR * multiplier) * motor_power);
     int intspeedFL = (int)((speedFL * multiplier) * motor_power);
     int intspeedRR = (int)((speedRR * multiplier) * motor_power);
     int intspeedRL = (int)((speedRL * multiplier) * motor_power);
-
+    // Serial.println(intspeedFR);
+    // Serial.println(intspeedFL);
+    // Serial.println(intspeedRR);
+    // Serial.println(intspeedRL);
+    
     if (defenseStop)
     {
         Stop();
@@ -169,26 +182,24 @@ void Motor::Stop()
     analogWrite(pinspeedRR, 0);
     analogWrite(pinspeedRL, 0);
     digitalWrite(pincontrolFLA, HIGH);
-    digitalWrite(pincontrolFLB, LOW);
+    digitalWrite(pincontrolFLB, HIGH);
     digitalWrite(pincontrolFRA, HIGH);
-    digitalWrite(pincontrolFRB, LOW);
+    digitalWrite(pincontrolFRB, HIGH);
     digitalWrite(pincontrolRRA, HIGH);
-    digitalWrite(pincontrolRRB, LOW);
+    digitalWrite(pincontrolRRB, HIGH);
     digitalWrite(pincontrolRLA, HIGH);
-    digitalWrite(pincontrolRLB, LOW);
+    digitalWrite(pincontrolRLB, HIGH);
 }
 double Motor::RecordDirection()
 {
-    if (digitalRead(36) == LOW)
-    {
-        initialOrientation = compassSensor.getOrientation();
-    }
+
+    initialOrientation = compassSensor.getOrientation();
     return initialOrientation;
 }
 
 double Motor::getOrientation()
 {
-    Serial.println(compassSensor.getOrientation());
+    // Serial.println(compassSensor.getOrientation());
     return compassSensor.getOrientation();
 }
 
@@ -241,6 +252,7 @@ double Motor::FindCorrection(double orientation, double robotOrientation)
     {
         correction = 1;
     }
-
+    Serial.print("correction: ");
+    Serial.println(correction);
     return correction;
 }

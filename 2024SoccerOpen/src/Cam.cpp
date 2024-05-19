@@ -91,31 +91,3 @@ double Cam::FilterAngle(double angle, double previousAngle)
     return angle;
   }
 }
-
-double Cam::ComplimentaryFilterAngle(double angle, double validAngle)
-{
-  double diff = abs(angle - validAngle);
-  diff = min(diff, 360 - diff);
-  if (diff > 20)
-  {
-    return 0.1 * angle + 0.9 * validAngle;
-  }
-  else
-  {
-    return 0.9 * angle + 0.1 * validAngle;
-  }
-}
-
-double Cam::ComplimentaryFilterDistance(double dist, double validDist)
-{
-  double diff = abs(dist - validDist);
-  diff = min(diff, 360 - diff);
-  if (diff > 20)
-  {
-    return 0.1 * dist + 0.9 * validDist;
-  }
-  else
-  {
-    return 0.9 * dist + 0.1 * validDist;
-  }
-}
