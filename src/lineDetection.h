@@ -10,7 +10,7 @@ public:
     LineDetection();
     int *GetValues();
     double GetAngle(int *calibrateVal);
-    double Process(int *calibrateVal);
+    double Process(int *calibrateVal, int orientation, int initialOrient);
     double dotProduct[48];
     int anglebisc;
     bool linepresent;

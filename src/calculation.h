@@ -12,6 +12,7 @@ public:
     double getAngle(double x, double y);
     double getX(int angle);
     double getY(int angle);
+    int complimentaryFilter(int angle, int prevAngle, double weight);
 
 private:
     double vectorX;
@@ -21,6 +22,7 @@ private:
     double robotAngleX;
     double robotAngleY;
     bool projection;
+    int angleDiff;
 };
 
 #endif

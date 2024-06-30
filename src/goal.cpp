@@ -5,7 +5,40 @@ Goal::Goal()
     pinMode(kickerPin, OUTPUT);
     kickHold = 1000;
 }
+int Goal::ballAngleCheck(int ballAngle, int initialOrientation, int orientation){
 
+    int angleDiff = abs(orientation - initialOrientation);
+    bool obtuse = false;
+    if (angleDiff > 180)
+    {
+        angleDiff = 360 - angleDiff;
+        obtuse = true;
+    }
+    if (obtuse && initialOrientation < 180 && orientation > 180)
+    {
+        orientation = -1 * (360 - orientation);
+    }
+    else if (obtuse && initialOrientation > 180 && orientation < 180)
+    {
+        orientation = (orientation + 360);
+    }
+    if (orientation < initialOrientation)
+    {
+        angleDiff = -1 * angleDiff;
+    }
+
+
+    ballAngle += angleDiff;
+    if(ballAngle > 360){
+        ballAngle -= 360;
+    }
+    if(ballAngle < 0){
+        ballAngle += 360;
+    }
+    // Serial.print("calculated ballAngle: ");
+    // Serial.println(ballAngle);
+    return ballAngle;
+}
 int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientation)
 {
     if (goalAngle == -5)
@@ -29,7 +62,7 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
             goalAngle += 360;
     }
 
-    goalAngle = complimentaryFilter(goalAngle, previousScoreAngle);
+    goalAngle = calculation.complimentaryFilter(goalAngle, previousScoreAngle, 0.7);
     previousScoreAngle = goalAngle;
     Serial.print("Goal Orientation: ");
     Serial.println(goalAngle);
@@ -38,7 +71,7 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
 
 void Goal::kick()
 {
-    if (timer > (kickHold + 20000))
+    if (timer > (kickHold + 5000))
     {
         timer = 0;
     }
@@ -65,24 +98,4 @@ void Goal::kickAllowed(int y)
     {
         kick();
     }
-}
-
-int Goal::complimentaryFilter(int angle, int prevAngle)
-{
-    angleDiff = abs(angle - prevAngle);
-    if(angleDiff >= 180){
-        angleDiff = 360-angleDiff;
-        if(angle > prevAngle)
-            angle = prevAngle - angleDiff;
-        else
-            angle = prevAngle + angleDiff;
-    }
-
-    int weightedValue = ((0.95 * angle) + (0.05 * prevAngle));
-    if(weightedValue >= 360)
-        weightedValue -= 360;
-    if(weightedValue < 0){
-        weightedValue += 360;
-    }
-    return weightedValue;
 }

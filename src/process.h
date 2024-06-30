@@ -11,6 +11,9 @@
 #include <goal.h>
 #include <calculation.h>
 #include <defense.h>
+#include <bluetooth.h>
+#include <localization.h>
+#include <roleSwitching.h>
 
 class Process
 {
@@ -19,6 +22,7 @@ public:
     Process();
     void offense(double motorPower);
     void defense(double motorPower);
+    RoleSwitch roleSwitch;
 
 private:
     LineDetection lineDetection;
@@ -31,8 +35,14 @@ private:
     Calculation calculation;
     Defense goalie;
     Ultrasonic ultrasonic;
-    double getGoal();
+    Bluetooth bluetooth;
+    Localization localization;
+    double getHomeGoal();
+    double getAwayGoal();
     void smoothMove(int moveAngle, int lineAngle, double motorPower, int orientation);
     int getOrientationOffense();
+    void general();
+    int lineAngle;
+    int orientation;
 };
 #endif

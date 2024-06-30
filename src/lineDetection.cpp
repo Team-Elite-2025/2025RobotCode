@@ -66,7 +66,7 @@ int *LineDetection::GetValues()
         }
         lineValues[i] = val;
     }
-    // for(int i = 0; i < 8; i++){
+    // for(int i = 0; i < 48; i++){
     //     Serial.print(i);
     //     Serial.print(": ");
     //     Serial.println(lineValues[i]);
@@ -142,7 +142,7 @@ double LineDetection::Chord()
     return (1 * sin(toRadians(sensorAngle / 2)));
 }
 
-double LineDetection::Process(int *calibrateVal)
+double LineDetection::Process(int *calibrateVal, int orientation, int initialOrient)
 {
     // MAKE SURE YOU CALL THE PREVIOUS METHOD OTHERWISE NOTHING HAPPENS
     GetAngle(calibrateVal);
@@ -154,6 +154,36 @@ double LineDetection::Process(int *calibrateVal)
             initialAngle = anglebisc;
         }
         currentAngle = anglebisc;
+
+        int orientationDrift = abs(orientation - initialOrient);
+        bool obtuse = false;
+        if (orientationDrift > 180)
+        {
+            orientationDrift = 360 - orientationDrift;
+            obtuse = true;
+        }
+        if (obtuse && initialOrient < 180 && orientation > 180)
+        {
+            orientation = -1 * (360 - orientation);
+        }
+        else if (obtuse && initialOrient > 180 && orientation < 180)
+        {
+            orientation = (orientation + 360);
+        }
+        if (orientation < initialOrient)
+        {
+            orientationDrift = -1 * orientationDrift;
+        }
+
+        currentAngle += orientationDrift;
+        if (currentAngle >= 360)
+        {
+            currentAngle -= 360;
+        }
+        else if (currentAngle < 0)
+        {
+            currentAngle += 360;
+        }
         angleDiff = abs(currentAngle - initialAngle);
         initialAngle = currentAngle;
         if (angleDiff > 180)
@@ -184,10 +214,12 @@ double LineDetection::Process(int *calibrateVal)
     }
     else if (linepresent == false)
     {
-        if(lineSwitch){
+        if (lineSwitch)
+        {
             outOfBounds = true;
         }
-        else{
+        else
+        {
             outOfBounds = false;
             avoidanceAngle = -1;
         }

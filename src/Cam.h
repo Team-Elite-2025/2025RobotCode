@@ -5,6 +5,7 @@
 #include <string>
 #include <Adafruit_I2CDevice.h>
 #include <iostream>
+#include <trig.h>
 
 class Cam
 {
@@ -17,6 +18,7 @@ public:
         double CamCalc();
         double FilterAngle(double angle, double validAngle);
         std::string buffer;
+        void ballNotFound(int ballX, int ballY, int robotX, int robotY);
 
 private:
         char read;

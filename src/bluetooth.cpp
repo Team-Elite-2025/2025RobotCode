@@ -1,0 +1,66 @@
+#include <bluetooth.h>
+
+Bluetooth::Bluetooth()
+{
+    statePin = 17;
+}
+
+void Bluetooth::readData()
+{
+    if (Serial7.available() > 0)
+    {
+        for (int i = 0; i < Serial7.available(); i++)
+        {
+            read = Serial2.read();
+            if (read == 'x')
+            {
+                xCoord = strtod(buffer.c_str(), NULL);
+                buffer = "";
+                // Serial.print("X: ");
+                // Serial.println(xCoord);
+            }
+
+            else if (read == 'y')
+            {
+                yCoord = strtod(buffer.c_str(), NULL);
+                // Serial.print("Y: ");
+                // Serial.println(yCoord);
+                buffer = "";
+            }
+            else if (read == 'd')
+            {
+                ballDist = strtod(buffer.c_str(), NULL);
+                // Serial.print("mateBallDist: ");
+                // Serial.println(ballDist);
+                buffer = "";
+            }
+            else if (read == 'r')
+            {
+                role = strtod(buffer.c_str(), NULL);
+                // Serial.print("mateRole: ");
+                // Serial.println(role);
+                buffer = "";
+            }
+            else
+            {
+                buffer += read;
+            }
+        }
+    }
+}
+
+void Bluetooth::sendData(int x, int y, int ballDist, int ourRole){
+    Serial7.write(x + 'x' + y + 'y' + ballDist + 'd' + ourRole + 'r');
+}
+int Bluetooth::getRole(){
+    return role;
+}
+int Bluetooth::getXCoord(){
+    return xCoord;
+}
+int Bluetooth::getYCoord(){
+    return yCoord;
+}
+int Bluetooth::getDistance(){
+    return ballDist;
+}

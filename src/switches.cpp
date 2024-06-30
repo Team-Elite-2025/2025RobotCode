@@ -12,7 +12,7 @@ Switch::Switch()
 
 bool Switch::start()
 {
-    if (digitalRead(40) == HIGH)
+    if (digitalRead(31) == HIGH)
     {
         return true;
     }
@@ -20,15 +20,15 @@ bool Switch::start()
 }
 bool Switch::switchSide()
 {
-    if (digitalRead(38) == HIGH)
+    if (digitalRead(40) == HIGH)
     {
         return true;
     }
     return false;
 }
-bool Switch::switchRole()
+bool Switch::kickoff()
 {
-    if (digitalRead(36) == HIGH)
+    if (digitalRead(38) == HIGH)
     {
         return true;
     }
@@ -36,7 +36,7 @@ bool Switch::switchRole()
 }
 bool Switch::calibration()
 {
-    if (digitalRead(31) == HIGH)
+    if (digitalRead(36) == HIGH)
     {
         return true;
     }

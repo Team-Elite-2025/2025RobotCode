@@ -6,20 +6,20 @@
 Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.003, REVERSE)
 {
     // corresponding pin values on teensy
-    pinspeedRL = 4;
+    pinspeedFR = 4;
     pinspeedRR = 3;
-    pinspeedFL = 2;
-    pinspeedFR = 5;
+    pinspeedRL = 2;
+    pinspeedFL = 5;
 
-    pincontrolRLA = 18;
+    pincontrolFRA = 18;
     pincontrolRRA = 20;
-    pincontrolFLA = 22;
-    pincontrolFRA = 9;
+    pincontrolRLA = 22;
+    pincontrolFLA = 9;
 
-    pincontrolRLB = 19;
+    pincontrolFRB = 19;
     pincontrolRRB = 21;
-    pincontrolFLB = 23;
-    pincontrolFRB = 10;
+    pincontrolRLB = 23;
+    pincontrolFLB = 10;
 
     defenseStop = false;
 
@@ -43,7 +43,7 @@ Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.003, REVERSE)
     myPID.SetOutputLimits(0, 100);
 };
 
-void Motor::Move(double intended_angle, double motor_power, double robotOrientation)
+void Motor::Move(double intended_angle, double motor_power, double initialOrientation)
 {
     speedRR = 0;
     speedRL = 0;
@@ -61,7 +61,7 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
     // find max_power among motors to scale
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
 
-    FindCorrection(compassSensor.getOrientation(), robotOrientation);
+    FindCorrection(compassSensor.getOrientation(), initialOrientation);
     // add correction to account for rotation needed
 
     powerFR = powerFR / max_power;
@@ -90,7 +90,7 @@ void Motor::Move(double intended_angle, double motor_power, double robotOrientat
 
 
 
-    controlRL = powerRL > 0 ? LOW : HIGH;
+    controlRL = powerRL < 0 ? LOW : HIGH;
     controlRR = powerRR > 0 ? LOW : HIGH;
     controlFL = powerFL < 0 ? LOW : HIGH;
     controlFR = powerFR > 0 ? LOW : HIGH;
@@ -199,28 +199,29 @@ double Motor::RecordDirection()
 
 double Motor::getOrientation()
 {
-    // Serial.println(compassSensor.getOrientation());
     return compassSensor.getOrientation();
 }
 
-double Motor::FindCorrection(double orientation, double robotOrientation)
+double Motor::FindCorrection(double orientation, double initialOrientation)
 {
 
-    orientationVal = abs(orientation - robotOrientation);
-
+    orientationVal = abs(orientation - initialOrientation);
+    bool obtuse = false;
     if (orientationVal > 180)
     {
         orientationVal = 360 - orientationVal;
+        obtuse = true;
     }
-    if (robotOrientation < 180 && orientation > 180)
+
+    if (obtuse && initialOrientation < 180 && orientation > 180)
     {
         orientation = -1 * (360 - orientation);
     }
-    else if (robotOrientation > 180 && orientation < 180)
+    else if (obtuse && initialOrientation > 180 && orientation < 180)
     {
         orientation = (orientation + 360);
     }
-    if (orientation < robotOrientation)
+    if (orientation < initialOrientation)
     {
         orientationVal = -1 * orientationVal;
     }

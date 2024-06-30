@@ -72,6 +72,20 @@ double Cam::CamCalc()
     return 0;
   }
 }
+void Cam::ballNotFound(int ballX, int ballY, int robotX, int robotY)
+{
+  if (ballX == -5 || ballY == -5)
+  {
+    return;
+  }
+  int relativeX = ballX - robotX;
+  int relativeY = ballY - robotY;
+  int angle = toDegrees(atan2(relativeX, relativeY));
+  if (angle < 0)
+    angle = 360 + angle;
+  ball = angle;
+  ballDistance = sqrt((pow(relativeX,2) + pow(relativeY,2)));
+}
 double Cam::FilterAngle(double angle, double previousAngle)
 {
   if (angle == -5)

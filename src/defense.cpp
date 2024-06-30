@@ -32,13 +32,18 @@ int Defense::defenseCalc(int ballAngle, int goalAngle)
     return defenseAngle;
 }
 
-int Defense::defenseOrientation(int ballAngle, int orientation, int initialOrientation)
+int Defense::defenseOrientation(int goalAngle, int orientation, int initialOrientation)
 {
-    if (ballAngle > 180)
-    {
-        ballAngle -= 360;
+    goalAngle = calculation.complimentaryFilter(goalAngle, previousGoalAngle, 0.7);
+    goalAngle += 180;
+    if(goalAngle > 360){
+        goalAngle -= 360;
     }
-    theoreticalDir = orientation + ballAngle;
+    if (goalAngle > 180)
+    {
+        goalAngle -= 360;
+    }
+    theoreticalDir = orientation + goalAngle;
     if (theoreticalDir >= 360)
     {
         theoreticalDir -= 360;
@@ -57,5 +62,6 @@ int Defense::defenseOrientation(int ballAngle, int orientation, int initialOrien
     {
         return initialOrientation;
     }
+    previousGoalAngle = goalAngle;
     return theoreticalDir;
 }

@@ -28,6 +28,5 @@ void Calibration::calState(Motor &motor, LineDetection &lineDetection)
     {
         calibrate(lineDetection.GetValues());
         motor.RecordDirection();
-        lineDetection.lineSwitch = false;
     }
 }

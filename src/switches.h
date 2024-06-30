@@ -8,7 +8,7 @@ public:
     Switch();
     bool start();
     bool switchSide();
-    bool switchRole();
+    bool kickoff();
     bool calibration();
     bool lightgate();
 

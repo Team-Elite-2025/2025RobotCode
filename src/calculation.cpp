@@ -51,3 +51,17 @@ double Calculation::getY(int angle)
 {
     return cos(toRadians(angle));
 }
+int Calculation::complimentaryFilter(int angle, int prevAngle, double weight)
+{
+    angleDiff = abs(angle - prevAngle);
+    if(angleDiff >= 180){
+        angleDiff = 360-angleDiff;
+        if(angle > prevAngle)
+            angle = prevAngle - angleDiff;
+        else
+            angle = prevAngle + angleDiff;
+    }
+
+    int weightedValue = ((weight * angle) + ((1-weight) * prevAngle));
+    return weightedValue;
+}

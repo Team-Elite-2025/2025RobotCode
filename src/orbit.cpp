@@ -19,8 +19,8 @@ double Orbit::CalculateRobotAngle(double ballAngle, double goalAngle, double dis
     Serial.print("dampen val: ");
     Serial.println(dampenVal);
     double newballAngle = ballAngle > 180 ? (360 - ballAngle) : ballAngle;
-    double leftOrbitValue = min(90, 1.7 * exp(0.103 * newballAngle));
-    double rightOrbitvalue = min(90, 0.001 * exp(0.19 * newballAngle)); // final
+    double leftOrbitValue = min(90, 2.8 * exp(0.095 * newballAngle));
+    double rightOrbitvalue = min(90, 10 * exp(0.036 * newballAngle)); // final
     // Serial.print("Orbit val before: ");
     // Serial.println(orbitvalue);
     // orbitvalue = orbitvalue * dampenVal;

@@ -12,12 +12,10 @@ Ultrasonic::Ultrasonic()
     pinMode(trig2Pin, OUTPUT);
     pinMode(trig3Pin, OUTPUT);
     pinMode(trig4Pin, OUTPUT);
-    allowRight = true;
-    allowFront = true;
 }
 
-int Ultrasonic::leftSensor()
-{ // Left
+int Ultrasonic::backSensor()
+{ 
     digitalWrite(trig1Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig1Pin, HIGH);
@@ -33,14 +31,14 @@ int Ultrasonic::leftSensor()
     }
     else
     {
-        // Serial.print("Left:");
-        // Serial.print(distance);
-        // Serial.println(" cm");
+        Serial.print("Back:");
+        Serial.print(distance);
+        Serial.println(" cm");
         return distance;
     }
 }
-int Ultrasonic::backSensor()
-{ // Back
+int Ultrasonic::rightSensor()
+{ 
     digitalWrite(trig2Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig2Pin, HIGH);
@@ -56,14 +54,14 @@ int Ultrasonic::backSensor()
     }
     else
     {
-        // Serial.print("Back:");
-        // Serial.print(distance);
-        // Serial.println(" cm");
+        Serial.print("Right:");
+        Serial.print(distance);
+        Serial.println(" cm");
         return distance;
     }
 }
-int Ultrasonic::frontSensor()
-{ // FRONT
+int Ultrasonic::leftSensor()
+{ 
     digitalWrite(trig3Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig3Pin, HIGH);
@@ -79,14 +77,14 @@ int Ultrasonic::frontSensor()
     }
     else
     {
-        // Serial.print("Front:");
-        // Serial.print(distance);
-        // Serial.println(" cm");
+        Serial.print("Left:");
+        Serial.print(distance);
+        Serial.println(" cm");
         return distance;
     }
 }
-int Ultrasonic::rightSensor()
-{ // RIGHT
+int Ultrasonic::frontSensor()
+{ 
     digitalWrite(trig4Pin, LOW);
     delayMicroseconds(2);
     digitalWrite(trig4Pin, HIGH);
@@ -102,75 +100,10 @@ int Ultrasonic::rightSensor()
     }
     else
     {
-        // Serial.print("Right:");
-        // Serial.print(distance);
-        // Serial.println(" cm");
+        Serial.print("Front:");
+        Serial.print(distance);
+        Serial.println(" cm");
         return distance;
     }
 }
-void Ultrasonic::localization(double correction){
-    getY(correction);
-}
-void Ultrasonic::localizationDefense(double correction){
-    getX(correction);
-    backDefense = backSensor();
-    if(correction <= 0.25){
-        prevYDefense = backDefense;
-    }
 
-}
-int Ultrasonic::getXCoordinate(){
-    return prevX;
-}
-int Ultrasonic::getYCoordinate(){
-    return prevY;
-}
-int Ultrasonic::getYCoordinateDefense(){
-    return prevYDefense;
-}
-int Ultrasonic::getX(double correction) // Range: -70 - +70
-{   
-
-    if(allowRight){
-        right = rightSensor();
-        allowRight = false;
-    }
-    else if(offsetx >= 5){
-        left = leftSensor();
-        offsetx = 0;
-        allowRight = true;
-    }
-    int total = left + right;
-    if (total <= 185 && total >= 165 && correction <= 0.25)
-        prevX = (left - right) / 2.0;
-    return prevX;
-}
-int Ultrasonic::getY(double correction) // Range: -85 - +85
-{
-    getX(correction);
-    
-    if(allowFront){
-        front = frontSensor();
-        allowFront = false;
-    }
-    else if(offsety >= 15){
-        back = backSensor();
-        offsety = 0;
-        allowFront = true;
-    }
-    int total = back + front;
-    // Serial.print("total: ");
-    // Serial.println(total);
-    if (prevX <= -23 || prevX >= 23)
-    {
-        if (total <= 245 && total >= 225 && correction <= 0.25)
-            prevY = (back - front) / 2.0;
-    }
-    else
-    {
-        // 5.2 Doff
-        if (total <= (245 - 11.2) && total >= (225 - 11.2) && correction <= 0.25)
-            prevY = (back - front) / 2.0;
-    }
-    return prevY;
-}
