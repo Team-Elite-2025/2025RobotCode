@@ -26,7 +26,7 @@ private:
     void getXUltrasonic(double correction);
     void getYUltrasonic(double correction);
     void getYUltrasonicDefense(double correction);
-    void cameraLocalization(int homeGoal, int awayGoal);
+    void cameraLocalization(int homeGoal, int awayGoal, int correction);
     int cameraXCoord;
     int cameraYCoord;
     int rightDist;
@@ -46,5 +46,8 @@ private:
     int robotY;
     int prevHomeGoal;
     int prevAwayGoal;
+    int cameraUncertainty;
+    int prevXUltrasonic;
+    int prevYUltrasonic;
 };
 #endif

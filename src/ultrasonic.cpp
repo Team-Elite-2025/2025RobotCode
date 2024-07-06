@@ -90,8 +90,8 @@ int Ultrasonic::frontSensor()
     digitalWrite(trig4Pin, HIGH);
     delayMicroseconds(10);
     digitalWrite(trig4Pin, LOW);
-
-    const unsigned long duration = pulseIn(echoPin, HIGH);
+    // pulseIn(echoPin, HIGH,100);
+    const unsigned long duration = pulseIn(echoPin, HIGH,100000);
     int distance = duration / 29 / 2;
     if (duration == 0)
     {

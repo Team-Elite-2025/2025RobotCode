@@ -34,7 +34,7 @@ int Defense::defenseCalc(int ballAngle, int goalAngle)
 
 int Defense::defenseOrientation(int goalAngle, int orientation, int initialOrientation)
 {
-    goalAngle = calculation.complimentaryFilter(goalAngle, previousGoalAngle, 0.7);
+    goalAngle = calculation.complimentaryFilterAngle(goalAngle, previousGoalAngle, 0.7);
     goalAngle += 180;
     if(goalAngle > 360){
         goalAngle -= 360;

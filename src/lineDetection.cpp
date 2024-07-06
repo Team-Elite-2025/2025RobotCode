@@ -66,11 +66,28 @@ int *LineDetection::GetValues()
         }
         lineValues[i] = val;
     }
-    // for(int i = 0; i < 48; i++){
-    //     Serial.print(i);
-    //     Serial.print(": ");
-    //     Serial.println(lineValues[i]);
-    // }
+    for(int i = 0; i < 48; i++){
+        if(lineValues[i] < 5 || lineValues[i]>1020){
+            int after;
+            int before;
+            if(i+1 == 48){
+                after = lineValues[0];
+            }
+            else{
+                after = lineValues[i+1];
+            }
+            if(i-1 == -1){
+                before = lineValues[47];
+            }
+            else{
+                before = lineValues[i-1];
+            }
+            lineValues[i] = (before + after)/2;
+        }
+        // Serial.print(i);
+        // Serial.print(": ");
+        // Serial.println(lineValues[i]);
+    }
     return lineValues;
 };
 
@@ -190,7 +207,7 @@ double LineDetection::Process(int *calibrateVal, int orientation, int initialOri
         {
             angleDiff = 360 - angleDiff;
         }
-        if (angleDiff > 100 && lineSwitch == false)
+        if (angleDiff > 120 && lineSwitch == false)
         {
             lineSwitch = true;
             angleDiff = 0;
@@ -198,7 +215,7 @@ double LineDetection::Process(int *calibrateVal, int orientation, int initialOri
         if (lineSwitch == true)
         {
             avoidanceAngle = anglebisc;
-            if (angleDiff > 100)
+            if (angleDiff > 120)
             {
                 lineSwitch = false;
             }
@@ -214,18 +231,13 @@ double LineDetection::Process(int *calibrateVal, int orientation, int initialOri
     }
     else if (linepresent == false)
     {
-        if (lineSwitch)
-        {
-            outOfBounds = true;
-        }
-        else
-        {
-            outOfBounds = false;
-            avoidanceAngle = -1;
-        }
+
+        outOfBounds = false;
+        avoidanceAngle = -1;
+        lineSwitch = false;
         initialAngle = -1;
     }
-    // Serial.print("line: ");
-    // Serial.println(avoidanceAngle);
+    Serial.print("line: ");
+    Serial.println(avoidanceAngle);
     return avoidanceAngle;
 };

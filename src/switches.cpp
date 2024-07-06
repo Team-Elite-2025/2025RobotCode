@@ -8,6 +8,10 @@ Switch::Switch()
     analogWriteFrequency(ledPin, 38000);
     delay(100);
     analogWrite(ledPin, 127);
+    pinMode(31, INPUT);
+    pinMode(40, INPUT);
+    pinMode(38, INPUT);
+    pinMode(36, INPUT);
 }
 
 bool Switch::start()

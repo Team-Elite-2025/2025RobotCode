@@ -24,6 +24,7 @@ public:
   bool defenseStop;
   Switch switches;
   double initialOrientation = 0;
+  double orientationVal;
 
 private:
   double max_power;
@@ -64,7 +65,7 @@ private:
   int pincontrolRRB;
   int pincontrolRLB;
 
-  double orientationVal;
+
   int stopTime;
   bool setTime;
   double vectorX;

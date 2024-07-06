@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 
-Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.003, REVERSE)
+Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.02, REVERSE)
 {
     // corresponding pin values on teensy
     pinspeedFR = 4;
@@ -41,6 +41,7 @@ Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.003, REVERSE)
     Setpoint = 0;
     myPID.SetMode(AUTOMATIC);
     myPID.SetOutputLimits(0, 100);
+    myPID.SetSampleTime(2);
 };
 
 void Motor::Move(double intended_angle, double motor_power, double initialOrientation)
@@ -60,7 +61,6 @@ void Motor::Move(double intended_angle, double motor_power, double initialOrient
     powerFL = sin(toRadians(intended_angle - 308));
     // find max_power among motors to scale
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
-
     FindCorrection(compassSensor.getOrientation(), initialOrientation);
     // add correction to account for rotation needed
 
@@ -145,10 +145,6 @@ void Motor::Move(double intended_angle, double motor_power, double initialOrient
     int intspeedFL = (int)((speedFL * multiplier) * motor_power);
     int intspeedRR = (int)((speedRR * multiplier) * motor_power);
     int intspeedRL = (int)((speedRL * multiplier) * motor_power);
-    // Serial.println(intspeedFR);
-    // Serial.println(intspeedFL);
-    // Serial.println(intspeedRR);
-    // Serial.println(intspeedRL);
     
     if (defenseStop)
     {
@@ -237,7 +233,7 @@ double Motor::FindCorrection(double orientation, double initialOrientation)
         correction = (Output / 100);
     }
 
-    if (orientationVal > -5 && orientationVal < 0)
+    if (orientationVal > -5 && orientationVal <= 0)
     {
         correction = 0;
     }
@@ -245,11 +241,11 @@ double Motor::FindCorrection(double orientation, double initialOrientation)
     {
         correction = 0;
     }
-    else if (orientationVal > 110)
+    else if (orientationVal > 90)
     {
         correction = -1;
     }
-    else if (orientationVal < -110)
+    else if (orientationVal < -90)
     {
         correction = 1;
     }

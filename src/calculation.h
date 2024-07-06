@@ -12,7 +12,8 @@ public:
     double getAngle(double x, double y);
     double getX(int angle);
     double getY(int angle);
-    int complimentaryFilter(int angle, int prevAngle, double weight);
+    int complimentaryFilterAngle(int angle, int prevAngle, double weight);
+    int complimentaryFilterDistance(int currentDist, int prevDist, double weight);
 
 private:
     double vectorX;

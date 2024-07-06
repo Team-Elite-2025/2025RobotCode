@@ -4,6 +4,7 @@ Goal::Goal()
     kickerPin = 30;
     pinMode(kickerPin, OUTPUT);
     kickHold = 1000;
+    previousScoreAngle = -1;
 }
 int Goal::ballAngleCheck(int ballAngle, int initialOrientation, int orientation){
 
@@ -29,7 +30,7 @@ int Goal::ballAngleCheck(int ballAngle, int initialOrientation, int orientation)
 
 
     ballAngle += angleDiff;
-    if(ballAngle > 360){
+    if(ballAngle >= 360){
         ballAngle -= 360;
     }
     if(ballAngle < 0){
@@ -47,6 +48,7 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
     }
     else
     {
+
         if (goalAngle > 180)
             goalAngle -= 360;
 
@@ -60,9 +62,13 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
 
         else if (goalAngle < 0)
             goalAngle += 360;
+        Serial.print("goal Angle: ");
+        Serial.println(goalAngle);
     }
 
-    goalAngle = calculation.complimentaryFilter(goalAngle, previousScoreAngle, 0.7);
+    Serial.print("Previous: ");
+    Serial.println(previousScoreAngle);
+    goalAngle = calculation.complimentaryFilterAngle(goalAngle, previousScoreAngle, 0.7);
     previousScoreAngle = goalAngle;
     Serial.print("Goal Orientation: ");
     Serial.println(goalAngle);

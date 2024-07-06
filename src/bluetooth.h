@@ -15,6 +15,7 @@ public:
     int getXCoord();
     int getRole();
     int getDistance();
+    bool getState();
 
 private:
     int statePin;

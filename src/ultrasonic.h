@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <trig.h>
 #include <elapsedMillis.h>
+
 class Ultrasonic
 {
 

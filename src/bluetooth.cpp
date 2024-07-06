@@ -3,6 +3,7 @@
 Bluetooth::Bluetooth()
 {
     statePin = 17;
+    pinMode(statePin, INPUT);
 }
 
 void Bluetooth::readData()
@@ -47,6 +48,12 @@ void Bluetooth::readData()
             }
         }
     }
+    else{
+        xCoord = -5;
+        yCoord = -5;
+        ballDist = -5;
+        role = -1;
+    }
 }
 
 void Bluetooth::sendData(int x, int y, int ballDist, int ourRole){
@@ -63,4 +70,10 @@ int Bluetooth::getYCoord(){
 }
 int Bluetooth::getDistance(){
     return ballDist;
+}
+bool Bluetooth::getState(){
+    if(digitalRead(statePin) == HIGH){
+        return true;
+    }
+    return false;
 }

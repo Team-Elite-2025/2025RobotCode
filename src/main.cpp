@@ -24,5 +24,5 @@ void loop()
   // else
   //   process.defense(motorPower);
 
-  delay(500);
+  // delay(500);
 }
