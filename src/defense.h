@@ -8,7 +8,7 @@ class Defense
 {
 public:
     Defense();
-    int defenseCalc(int ballAngle, int goalAngle);
+    int defenseCalc(int ballAngle, int goalAngle, int ballDistance, int correction);
     int defenseOrientation(int goalAngle, int orientation, int initialOrientation);
 
 private:
@@ -19,6 +19,8 @@ private:
     double robotAngleY;
     int theoreticalDir;
     int previousGoalAngle;
+    elapsedMillis hardStop;
+    int angleThreshold;
 };
 
 #endif

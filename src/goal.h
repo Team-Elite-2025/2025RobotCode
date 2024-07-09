@@ -11,7 +11,7 @@ class Goal
 public:
     Goal();
     int scoreOrientation(int orientation, int goalAngle, int initialOrientation);
-    void kickAllowed(int y);
+    void kickAllowed(int y, int correction);
     void kickBackground();
     int ballAngleCheck(int ballAngle, int initialOrientation, int orientation);
 

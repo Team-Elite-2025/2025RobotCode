@@ -68,7 +68,7 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
 
     Serial.print("Previous: ");
     Serial.println(previousScoreAngle);
-    goalAngle = calculation.complimentaryFilterAngle(goalAngle, previousScoreAngle, 0.7);
+    goalAngle = calculation.complimentaryFilterAngle(goalAngle, previousScoreAngle, 0.8);
     previousScoreAngle = goalAngle;
     Serial.print("Goal Orientation: ");
     Serial.println(goalAngle);
@@ -77,7 +77,7 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
 
 void Goal::kick()
 {
-    if (timer > (kickHold + 5000))
+    if (timer > (kickHold + 2000))
     {
         timer = 0;
     }
@@ -98,9 +98,9 @@ void Goal::kickBackground()
         digitalWrite(kickerPin, LOW);
     }
 }
-void Goal::kickAllowed(int y)
+void Goal::kickAllowed(int y, int correction)
 {
-    if (switches.lightgate() && y > 20)
+    if (switches.lightgate() && y > 20 && (correction <= 15 && correction >= -15))
     {
         kick();
     }

@@ -4,28 +4,71 @@ Defense::Defense()
 {
 }
 
-int Defense::defenseCalc(int ballAngle, int goalAngle)
+int Defense::defenseCalc(int ballAngle, int goalAngle, int ballDistance, int correction)
 {
+    Serial.print("Orientation Val: ");
+    Serial.println(correction);
+    int rotatedBall = ballAngle + correction;
+    int rotatedGoal = goalAngle + correction;
+    if (rotatedBall >= 360)
+    {
+        rotatedBall -= 360;
+    }
+    if (rotatedBall < 0)
+    {
+        rotatedBall += 360;
+    }
+    if (rotatedGoal >= 360)
+    {
+        rotatedGoal -= 360;
+    }
+    if (rotatedGoal < 0)
+    {
+        rotatedGoal += 360;
+    }
+    angleThreshold = max(15, -0.18 * ballDistance + 40);
+    angleThreshold = 180 - angleThreshold;
+    Serial.print("Threshold; ");
+    Serial.println(angleThreshold);
     angleDiff = abs(ballAngle - goalAngle);
     if (angleDiff > 180)
     {
         angleDiff = 360 - angleDiff;
     }
-    if (angleDiff <= 180 && angleDiff > 160)
+    if ((angleDiff <= 180 && angleDiff > angleThreshold) || (rotatedGoal < 115 && (rotatedBall > 115 && rotatedBall < 260)) || (rotatedGoal > 245 && (rotatedBall < 245 && rotatedBall > 100)))
     {
-        defenseAngle = -1;
+        if (angleDiff > 170 && hardStop <= 100)
+        {
+            defenseAngle += 180;
+            if (defenseAngle >= 360)
+            {
+                defenseAngle -= 360;
+            }
+            else if (defenseAngle < 0)
+            {
+                defenseAngle += 360;
+            }
+        }
+        else
+            defenseAngle = -1;
     }
     else
     {
-
+        hardStop = 0;
         robotAngleX = calculation.getX(ballAngle) + calculation.getX(goalAngle);
         robotAngleY = calculation.getY(ballAngle) + calculation.getY(goalAngle);
 
         defenseAngle = calculation.getAngle(robotAngleX, robotAngleY);
-        if (defenseAngle > 270 || defenseAngle < 90)
+        int updatedHorizontal = 180 + (-1* correction);
+        if (updatedHorizontal >= 360)
         {
-            defenseAngle = calculation.projectionCalc(0, defenseAngle);
+            updatedHorizontal -= 360;
         }
+        else if (updatedHorizontal < 0)
+        {
+            updatedHorizontal += 360;
+        }
+        defenseAngle = calculation.projectionCalc(updatedHorizontal, defenseAngle);
     }
     Serial.print("defense Angle: ");
     Serial.println(defenseAngle);
@@ -34,9 +77,13 @@ int Defense::defenseCalc(int ballAngle, int goalAngle)
 
 int Defense::defenseOrientation(int goalAngle, int orientation, int initialOrientation)
 {
-    goalAngle = calculation.complimentaryFilterAngle(goalAngle, previousGoalAngle, 0.7);
+    if (goalAngle > 270 || goalAngle < 90)
+    {
+        return previousGoalAngle;
+    }
     goalAngle += 180;
-    if(goalAngle > 360){
+    if (goalAngle > 360)
+    {
         goalAngle -= 360;
     }
     if (goalAngle > 180)
@@ -57,11 +104,14 @@ int Defense::defenseOrientation(int goalAngle, int orientation, int initialOrien
     {
         diff = 360 - diff;
     }
-
     if (diff > 90)
     {
         return initialOrientation;
     }
-    previousGoalAngle = goalAngle;
+    if (defenseAngle != -1)
+    {
+        theoreticalDir = calculation.complimentaryFilterAngle(theoreticalDir, previousGoalAngle, 0.5);
+        previousGoalAngle = theoreticalDir;
+    }
     return theoreticalDir;
 }

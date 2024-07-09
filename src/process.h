@@ -14,6 +14,7 @@
 #include <bluetooth.h>
 #include <localization.h>
 #include <roleSwitching.h>
+#include <ESC.h>
 
 class Process
 {
@@ -37,12 +38,14 @@ private:
     Ultrasonic ultrasonic;
     Bluetooth bluetooth;
     Localization localization;
+    ESC esc;
     double getHomeGoal();
     double getAwayGoal();
     void smoothMove(int moveAngle, int lineAngle, double motorPower, int orientation);
     int getOrientationOffense();
-    void general();
+    void general(int role);
     int lineAngle;
     int orientation;
+    int* ballPos;
 };
 #endif

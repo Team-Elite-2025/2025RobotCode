@@ -6,7 +6,7 @@ Calculation::Calculation()
 int Calculation::projectionCalc(int anglebisc, int robotAngle)
 {
     int lineAngle = anglebisc + 180;
-    if (lineAngle > 360)
+    if (lineAngle >= 360)
     {
         lineAngle = lineAngle - 360;
     }

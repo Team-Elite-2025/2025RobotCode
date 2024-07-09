@@ -20,5 +20,11 @@ private:
     int multiplier;
     double homeAngle;
     Ultrasonic ultrasonic;
+    unsigned long now;
+    unsigned long lastTime;
+    unsigned long SampleTime;
+    double kd;
+    int lastAngle;
+    double derivative;
 };
 #endif

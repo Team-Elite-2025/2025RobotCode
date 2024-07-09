@@ -18,6 +18,8 @@ public:
   double RecordDirection();
   double FindCorrection(double orientation, double robotOrientation);
   double getOrientation();
+  bool spin(int target);
+  double speedControl(int ballDist, double initialSpeed, int stopAngle);
   CompassSensor compassSensor;
   int dirAngle;
   double correction;
@@ -25,8 +27,14 @@ public:
   Switch switches;
   double initialOrientation = 0;
   double orientationVal;
+  PID myPID;
 
 private:
+  void spinMotors(int direction);
+  void motorFR(int control, int speed);
+  void motorRR(int control, int speed);
+  void motorRL(int control, int speed);
+  void motorFL(int control, int speed);
   double max_power;
   double powerFR;
   double powerFL;
@@ -76,9 +84,12 @@ private:
   double robotAngleY;
   bool projection;
   int goalAAngleSide;
-
+  double currentSpeed;
   double Setpoint, Input, Output;
-  PID myPID;
+  elapsedMillis speedTimer;
+  elapsedMillis stopTimer;
+  int physicalRobot;
+
 };
 
 #endif

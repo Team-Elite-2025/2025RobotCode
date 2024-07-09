@@ -29,12 +29,20 @@ int *Localization::absoluteBallPos(int ballAngle, int ballDist)
     int y = robotY + cos(toRadians(ballAngle)) * ballDist;
     absolutePos[0] = x;
     absolutePos[1] = y;
+    Serial.print("BallX: ");
+    Serial.println(x);
+    Serial.print("BallY: ");
+    Serial.println(y);
     return absolutePos;
 }
 void Localization::offenseLocalization(double correction, int awayGoal, int homeGoal)
 {
     getXUltrasonic(correction);
     cameraLocalization(homeGoal, awayGoal, correction);
+    Serial.print("cameraX: ");
+    Serial.println(cameraXCoord);
+    Serial.print("cameraY: ");
+    Serial.println(cameraYCoord);
     double weight = max(0, ((-0.015 * xUncertainty) + 1));
     if (correction > correctionThreshold || correction < (-1 * correctionThreshold))
     {
@@ -63,6 +71,10 @@ void Localization::defenseLocalization(double correction, int awayGoal, int home
 {
     getXUltrasonic(correction);
     cameraLocalization(homeGoal, awayGoal, correction);
+    Serial.print("cameraX: ");
+    Serial.println(cameraXCoord);
+    Serial.print("cameraY: ");
+    Serial.println(cameraYCoord);
     double weight = max(0, ((-0.015 * xUncertainty) + 1));
     if (correction > correctionThreshold || correction < (-1 * correctionThreshold))
     {
@@ -74,8 +86,17 @@ void Localization::defenseLocalization(double correction, int awayGoal, int home
     if (correction > correctionThreshold || correction < (-1 * correctionThreshold))
     {
         weight = 0;
+        if(cameraUncertainty == 1){
+            weight = 1;
+            ultrasonicYCoord = prevYUltrasonic;
+        }
     }
+
     robotY = calculation.complimentaryFilterDistance(ultrasonicYCoord, cameraYCoord, weight);
+    Serial.print("RobotX: ");
+    Serial.println(robotX);
+    Serial.print("robotY: ");
+    Serial.println(robotY);
 }
 void Localization::getXUltrasonic(double correction) // Range: -70 - +70
 {
@@ -156,6 +177,9 @@ void Localization::getYUltrasonicDefense(double correction) // Range: -85 - +85
     {
         ultrasonicYCoord = (-1 * (fieldYDistWithGoal / 2)) + backDist;
     }
+    if (correction <= correctionThreshold && correction >= (-1 * correctionThreshold)){
+        prevYUltrasonic = ultrasonicYCoord;
+    }
 }
 void Localization::cameraLocalization(int homeGoal, int awayGoal, int correction)
 {
@@ -196,7 +220,8 @@ void Localization::cameraLocalization(int homeGoal, int awayGoal, int correction
     {
         awayGoal += 360;
     }
-
+    Serial.println(awayGoal);
+    Serial.println(homeGoal);
     double awaySlope = 1 / tan(toRadians(awayGoal));
     double homeSlope = 1 / tan(toRadians(homeGoal));
     int awayGoalPos = goalPos;
