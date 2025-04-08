@@ -49,5 +49,6 @@ private:
     int cameraUncertainty;
     int prevXUltrasonic;
     int prevYUltrasonic;
+    int absolutePos[2];
 };
 #endif

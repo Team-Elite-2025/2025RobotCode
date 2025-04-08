@@ -20,12 +20,13 @@ class Process
 {
 
 public:
-    Process();
+    Process(int physicalRobot);
     void offense(double motorPower);
     void defense(double motorPower);
     RoleSwitch roleSwitch;
 
 private:
+    // int physicalRobot = 1;
     LineDetection lineDetection;
     Motor motor;
     Cam cam;

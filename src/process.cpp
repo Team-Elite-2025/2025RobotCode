@@ -1,6 +1,6 @@
 #include <process.h>
 
-Process::Process()
+Process::Process(int physicalRobot):roleSwitch(physicalRobot), motor(physicalRobot), orbit(physicalRobot)
 {
 }
 
@@ -13,50 +13,56 @@ void Process::general(int role)
     motor.FindCorrection(motor.getOrientation(), motor.initialOrientation);
     if(role == 1){
         localization.offenseLocalization(motor.orientationVal, getAwayGoal(), getHomeGoal());
-        motor.myPID.SetTunings(0.35, 0, 0.00005);
+        motor.myPID.SetTunings(0.28, 0, 0.00005);
     }
     else{
         localization.defenseLocalization(motor.orientationVal,getAwayGoal(),getHomeGoal());
         motor.myPID.SetTunings(0.22,0,0);
     }
-//     bluetooth.readData();
-//     roleSwitch.background(cam.ballDistance, bluetooth.getRole(),bluetooth.getDistance(), bluetooth.getState());
-    int* ballPos = localization.absoluteBallPos(cam.ball,cam.ballDistance);//run this only after localization
-//     if(switches.start())
-//         bluetooth.sendData(ballPos[0], ballPos[1], cam.ballDistance, roleSwitch.getOurRole());
-//     if (cam.ball == -5)
-//         cam.ballNotFound(bluetooth.getXCoord(), bluetooth.getYCoord(),localization.getRobotX(), localization.getRobotY());
+    // bluetooth.readData();
+    // roleSwitch.background(cam.ball, cam.ballDistance, bluetooth.getRole(),bluetooth.getDistance(), bluetooth.getState());
+    ballPos = localization.absoluteBallPos(cam.ball,cam.ballDistance);//run this only after localization
+    // if(switches.start())
+    //     bluetooth.sendData(*ballPos, *(ballPos+1), cam.ballDistance, roleSwitch.getOurRole());
+    // if (cam.ball == -5)
+    //     cam.ballNotFound(bluetooth.getXCoord(), bluetooth.getYCoord(),localization.getRobotX(), localization.getRobotY());
+    if(role == 1){
+        esc.runDribbler(cam.ball,cam.ballDistance,switches.lightgate());
+}
 }
 void Process::offense(double motorPower)
 {
     goal.kickBackground();
     general(1);
-    if (lineDetection.linepresent && (lineDetection.Chord() > 0.8 || motorPower > 0.25))
+    motorPower = motor.speedControl(cam.ballDistance,motorPower, 1);
+    if (lineDetection.linepresent && (lineDetection.Chord() > 0.2 || motorPower > 0.2))
     {
-        motor.Move(lineAngle, motorPower, getOrientationOffense());
+        motor.Move(lineAngle, 0.2, getOrientationOffense());
     }
     else
     {
         if (cam.ball == -5)
-            smoothMove(orbit.GetToPosition(0, 0, localization.getRobotX(), localization.getRobotY()), lineAngle, motorPower, motor.initialOrientation);
+            smoothMove(-1, lineAngle, 0.5, motor.initialOrientation);
         else
         {
-            if((ballPos[0] >= 25 || ballPos[0] <= -25) && ballPos[1] > 80){
-                smoothMove(esc.takeBack(cam.ball,getAwayGoal(),orbit.CalculateRobotAngle(cam.ball, getAwayGoal(), cam.ballDistance),switches.lightgate(),motor.orientationVal), lineAngle, 0.18, motor.initialOrientation);
-            }
-            else{
-                smoothMove(orbit.CalculateRobotAngle(cam.ball, getAwayGoal(), cam.ballDistance), lineAngle, motorPower, getOrientationOffense());
-                goal.kickAllowed(localization.getRobotY(), motor.orientationVal);
-                esc.runDribbler(cam.ball,cam.ballDistance,switches.lightgate());
-            }
+            // if(esc.needTakeBack(getAwayGoal(),cam.ball, motor.orientationVal)){
+            //     Serial.println("takeback: ");
+            //     smoothMove(esc.takeBack(cam.ball,getAwayGoal(),orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime),motor.orientationVal, motor), lineAngle, 0.1, motor.initialOrientation);
+            // }
+            // else{
+                smoothMove(orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime), lineAngle, motorPower, getOrientationOffense());
+            // }
         }
     }
+    goal.kickAllowed(localization.getRobotY(), motor.orientationVal);
 }
 
 void Process::defense(double motorPower)
 {
     general(0);
-    if ((lineDetection.linepresent && lineDetection.Chord() > 0.8) || lineDetection.outOfBounds)
+    goal.kickBackground();
+    motorPower = motor.speedControl(cam.ballDistance,motorPower, 0);
+    if (lineDetection.linepresent && (lineDetection.Chord() > 0.2 ))
     {
         motor.Move(lineAngle, motorPower, goalie.defenseOrientation(getHomeGoal(), orientation, motor.initialOrientation));
     }
@@ -78,11 +84,11 @@ void Process::defense(double motorPower)
 
 void Process::smoothMove(int moveAngle, int lineAngle, double motorPower, int orientation)
 {
-    motorPower = motor.speedControl(cam.ballDistance,motorPower, moveAngle);
+
 
     if (moveAngle == -1)
     {
-        goal.kickAllowed(localization.getRobotY(), 0);
+        goal.kickAllowed(50, 0);
         motor.Stop();
     }
     else if (lineDetection.linepresent)

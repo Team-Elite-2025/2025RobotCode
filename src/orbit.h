@@ -9,9 +9,9 @@ class Orbit
 {
 
 public:
-    Orbit();
+    Orbit(int robotNum);
     double robotAngle;
-    double CalculateRobotAngle(double ballAngle, double goalAngle, double distance);
+    double CalculateRobotAngle(double ballAngle, double distance, double derivative, int sampleTime);
     double GetToPosition(int targetX, int targetY, int currentX, int currentY);
     bool inPos;
     bool inOrientation;
@@ -22,9 +22,9 @@ private:
     Ultrasonic ultrasonic;
     unsigned long now;
     unsigned long lastTime;
-    unsigned long SampleTime;
     double kd;
     int lastAngle;
     double derivative;
+    int physicalRobot;
 };
 #endif

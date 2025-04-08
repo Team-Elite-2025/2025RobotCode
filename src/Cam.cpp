@@ -7,9 +7,15 @@
 using namespace std;
 Cam::Cam()
 {
-  ball = 0;
-  yellowGoal = 0;
-  blueGoal = 0;
+  ball = -5;
+  yellowGoal = -5;
+  blueGoal = -5;
+  ballDistance = -5;
+  derivative = -5;
+  previousBallAngle = -5;
+  previousBlueAngle = -5;
+  previousYellowAngle = -5;
+  previousBallDistance = -5;
   buffer = "";
 }
 double Cam::CamCalc()
@@ -24,10 +30,23 @@ double Cam::CamCalc()
       {
         ball = strtod(buffer.c_str(), NULL);
         ball = FilterAngle(ball, previousBallAngle);
+        if ((previousBallAngle > 340 || previousBallAngle < 20) && previousBallDistance <= 25 && ball == -5)
+        {
+          inIntake = true;
+          previousBallAngle = previousBallAngle;
+          previousBallDistance = previousBallDistance;
+          ball = previousBallAngle;
+        }
+        else
+        {
+          inIntake = false;
+          previousBallAngle = ball;
+        }
+        if (switches.lightgate())
+          ball = 0;
         buffer = "";
         Serial.print("ball: ");
         Serial.println(ball);
-        previousBallAngle = ball;
       }
 
       else if (read == 'c')
@@ -48,21 +67,25 @@ double Cam::CamCalc()
         buffer = "";
         previousYellowAngle = yellowGoal;
       }
+      else if (read == 'f')
+      {
+        sampleTime = derivativeSample;
+        derivative = strtod(buffer.c_str(), NULL);
+        buffer = "";
+        derivativeSample = 0;
+      }
       else if (read == 'a')
       {
+        
         ballDistance = strtod(buffer.c_str(), NULL);
-        Serial.print("Distance Before: ");
-        Serial.println(ballDistance);
-        if(ballDistance == -5)
-          ballDistance = -5;
-        else if (ballDistance < 185)
+        if (inIntake == true)
         {
-          ballDistance = -228.02 * exp(-0.00198188 * ballDistance) + 200.086;
+          Serial.println("hi");
+          ballDistance = previousBallAngle;
+          previousBallDistance = previousBallDistance;
         }
-        else
-        {
-          ballDistance = 7.01168 * exp(0.00594217 * ballDistance) + 27.48;
-        }
+        if (switches.lightgate())
+          ballDistance = 12;
         Serial.print("Distance: ");
         Serial.println(ballDistance);
         buffer = "";
@@ -88,7 +111,9 @@ void Cam::ballNotFound(int ballX, int ballY, int robotX, int robotY)
   if (angle < 0)
     angle = 360 + angle;
   ball = angle;
-  ballDistance = sqrt((pow(relativeX,2) + pow(relativeY,2)));
+  ballDistance = sqrt((pow(relativeX, 2) + pow(relativeY, 2)));
+  Serial.print("Hidden Ball: ");
+  Serial.println(ball);
 }
 double Cam::FilterAngle(double angle, double previousAngle)
 {

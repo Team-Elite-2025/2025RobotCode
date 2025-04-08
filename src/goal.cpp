@@ -44,7 +44,7 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
 {
     if (goalAngle == -5)
     {
-        return previousScoreAngle;
+        return initialOrientation;
     }
     else
     {
@@ -62,12 +62,8 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
 
         else if (goalAngle < 0)
             goalAngle += 360;
-        Serial.print("goal Angle: ");
-        Serial.println(goalAngle);
     }
 
-    Serial.print("Previous: ");
-    Serial.println(previousScoreAngle);
     goalAngle = calculation.complimentaryFilterAngle(goalAngle, previousScoreAngle, 0.8);
     previousScoreAngle = goalAngle;
     Serial.print("Goal Orientation: ");
@@ -100,7 +96,7 @@ void Goal::kickBackground()
 }
 void Goal::kickAllowed(int y, int correction)
 {
-    if (switches.lightgate() && y > 20 && (correction <= 15 && correction >= -15))
+    if (switches.lightgate() && (correction <= 20 && correction >= -20 ))
     {
         kick();
     }

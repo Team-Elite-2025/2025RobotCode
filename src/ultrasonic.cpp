@@ -26,7 +26,7 @@ int Ultrasonic::backSensor()
     int distance = duration / 29 / 2;
     if (duration == 0)
     {
-        Serial.println("Warning: no pulse from left sensor");
+        Serial.println("Warning: no pulse from back sensor");
         return -1;
     }
     else

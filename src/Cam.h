@@ -6,6 +6,7 @@
 #include <Adafruit_I2CDevice.h>
 #include <iostream>
 #include <trig.h>
+#include <switches.h>
 
 class Cam
 {
@@ -15,10 +16,13 @@ public:
         double yellowGoal;
         double blueGoal;
         double ballDistance;
+        double derivative;
+        int sampleTime;
         double CamCalc();
         double FilterAngle(double angle, double validAngle);
         std::string buffer;
         void ballNotFound(int ballX, int ballY, int robotX, int robotY);
+        bool inIntake;
 
 private:
         char read;
@@ -26,5 +30,7 @@ private:
         double previousBlueAngle;
         double previousYellowAngle;
         double previousBallDistance;
+        elapsedMillis derivativeSample;
+        Switch switches;
 };
 #endif

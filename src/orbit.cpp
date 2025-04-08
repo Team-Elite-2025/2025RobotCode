@@ -1,63 +1,80 @@
 #include <orbit.h>
 
-Orbit::Orbit()
+Orbit::Orbit(int robotNum)
 {
-    kd = 0.1;
+    if(robotNum == 1){
+        kd = 0.2;
+    }
+    else{
+        kd = 0.3;
+    }
     inPos = false;
-    SampleTime = 34;
-    lastTime = millis() - SampleTime;
-    double SampleTimeInSec = ((double)SampleTime)/1000;
-    kd = kd / SampleTimeInSec;
+    physicalRobot = robotNum;
 }
 
-double Orbit::CalculateRobotAngle(double ballAngle, double goalAngle, double distance)
+double Orbit::CalculateRobotAngle(double ballAngle, double distance, double derivative, int sampleTime)
 {
-    now = millis();
-    unsigned long timeChange = (now - lastTime);
-
-    if (timeChange >= SampleTime)
+    Serial.print("Sample Time: ");
+    Serial.println(sampleTime);
+    Serial.print("Derivative: ");
+    Serial.println(derivative);
+    double SampleTimeInSec = ((double)sampleTime) / 1000;
+    if (derivative != -5)
     {
+        derivative = derivative / SampleTimeInSec;
+        derivative = kd * derivative;
+    }
+    else
+    {
+        derivative = 0;
+    }
+    Serial.print("D-Term: ");
+    Serial.println(derivative);
 
-        double dInput = sin(toRadians(ballAngle)) - sin(toRadians(lastAngle));
-        derivative = -1*(kd*dInput);
-        Serial.print("Derivative: ");
-        Serial.println(derivative);
+    distance = distance / 150;
+    if (distance > 1)
+    {
+        distance = 1;
+    }
+    distance = 1 - distance;
+    // Serial.print("calculated distance: ");
+    // Serial.println(distance);
+    // double dampenVal = min(1, 0.025 * exp(4.5 * distance));
+    double dampenVal = min(1, 0.02 * exp(4.5 * distance));
+    // Serial.print("dampen val: ");
+    // Serial.println(dampenVal);
+
+    double newballAngle = ballAngle > 180 ? (360 - ballAngle) : ballAngle;
+    double orbitValue;
 
 
-        distance = distance / 150;
-        if (distance > 1)
-        {
-            distance = 1;
-        }
-        distance = 1 - distance;
-        // Serial.print("calculated distance: ");
-        // Serial.println(distance);
-        double dampenVal = min(1, 0.025 * exp(4.5 * distance));
-        // Serial.print("dampen val: ");
-        // Serial.println(dampenVal);
+    if(physicalRobot == 0){ //no voltmeter
+        orbitValue = min(90, 8 * exp(0.033 * newballAngle));
+    }
+    else{ //voltmeter
+        orbitValue = min(90, 8 * exp(0.033 * newballAngle));
+    }
+    double outputSum = orbitValue * dampenVal;
+    if (derivative > 3)
+        outputSum -= derivative;
 
-        double newballAngle = ballAngle > 180 ? (360 - ballAngle) : ballAngle;
-        double orbitValue;
-        if (ballAngle >= 180)
-            orbitValue = min(90, 7.5 * exp(0.042 * newballAngle));
-        else
-        {
-            orbitValue = min(90, 7.5 * exp(0.042 * newballAngle));
-        }
-        if (newballAngle < 20)
-        {
-            orbitValue = 0;
-        }
-        // Serial.print("Orbit val before: ");
-        // Serial.println(orbitvalue);
-        // orbitvalue = orbitvalue * dampenVal;
-        // Serial.print("Orbit val after: ");
-        // Serial.println(orbitvalue);
-        robotAngle = ballAngle + (ballAngle > 180 ? -1 : 1) * (orbitValue * dampenVal);
-        if (robotAngle > 360)
-        {
-            robotAngle -= 360;
-        }
+    if (newballAngle < 20)
+    {
+        outputSum = 0;
+    }
+    // Serial.print("Orbit val before: ");
+    // Serial.println(orbitvalue);
+    // orbitvalue = orbitvalue * dampenVal;
+    // Serial.print("Orbit val after: ");
+    // Serial.println(orbitvalue);
+    robotAngle = ballAngle + (ballAngle > 180 ? -1 : 1) * (outputSum);
+    if (robotAngle >= 360)
+    {
+        robotAngle -= 360;
+    }
+    else if (robotAngle < 0)
+    {
+        robotAngle += 360;
     }
     Serial.print("robot Angle: ");
     Serial.println(robotAngle);

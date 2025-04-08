@@ -20,10 +20,11 @@ public:
 private:
     int statePin;
     char read;
-    std::string buffer;
+    String buffer;
     int xCoord;
     int yCoord;
     int ballDist;
     int role; //1 = offense; 0 = defense
+    elapsedMillis sendQueue;
 };
 #endif

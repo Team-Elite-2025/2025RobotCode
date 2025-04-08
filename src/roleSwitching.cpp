@@ -1,36 +1,49 @@
 #include <roleSwitching.h>
 
-RoleSwitch::RoleSwitch()
+RoleSwitch::RoleSwitch(int robotNum)
 {
-    ourRole = 1; // make 0 on other robot
+    if (robotNum == 0)
+        ourRole = 0; // make 0 on other robot
+    else
+        ourRole = 1;
 }
 
-void RoleSwitch::background(int ballDist, int mateRole, int mateBallDist, bool connection)
+void RoleSwitch::background(int ballAngle, int ballDist, int mateRole, int mateBallDist, bool connection)
 {
-    if (connection)
+    if (switches.start())
     {
-        if (mateRole == -1 && timer > 2000)
+        if (connection)
         {
-            ourRole = 1;
-        }
-        else if(mateRole != -1){
-            timer = 0;
-        }
-        
-        else if (ourRole == 1 && mateRole == 1)
-        { // we are slave
-            ourRole = 0;
-        }
-        else if (ourRole == 0 && ballDist != -5 && mateBallDist != -5)
-        { // we are master
-            if (ballDist < 30 && mateBallDist > 50)
+            if (mateRole == -1 && timer >= 2000)
             {
                 ourRole = 1;
             }
+            else if (mateRole != -1)
+            {
+                timer = 0;
+            }
+
+            if (ourRole == 1 && mateRole == 1 && switchBack >= 1000)
+            { // we are slave
+                ourRole = 0;
+            }
+            else if (ourRole == 0 && ballDist != -5 && mateBallDist != -5)
+            { // we are master
+                if (ballDist < 30 && mateBallDist > 50 && (ballAngle < 130 || ballAngle > 230))
+                {
+                    switchBack = 0;
+                    ourRole = 1;
+                }
+            }
+        }
+        else
+        {
+            ourRole = 1;
         }
     }
     else{
-        ourRole = 1;
+        timer = 0;
+        switchBack = 0;
     }
 }
 

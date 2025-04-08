@@ -15,13 +15,16 @@ private:
      int motorPin;
      int threshold;
      int takeBackAngle;
-     Motor motor;
+     Switch switches;
+     
 
 public:
     ESC();
     void dribbler(int speed);
     void runDribbler(double ballAngle,double dist, bool capture);
-    int takeBack(int ballAngle, int goalAngle, int orbitAngle, bool capture, int correction);
+    int takeBack(int ballAngle, int goalAngle, int orbitAngle, int correction, Motor &motor);
+    bool needTakeBack(int goalAngle, int ballAngle, int correction);
+    bool isTakeBack;
 };
 
 #endif

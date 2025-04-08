@@ -16,6 +16,7 @@ Switch::Switch()
 
 bool Switch::start()
 {
+    // if (digitalRead(31) == HIGH && digitalRead(17) == HIGH)
     if (digitalRead(31) == HIGH)
     {
         return true;

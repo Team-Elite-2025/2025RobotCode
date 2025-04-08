@@ -3,11 +3,11 @@
 #include <math.h>
 #include <string.h>
 
-Motor::Motor() : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.00005, REVERSE)
+Motor::Motor(int robotNum) : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.00005, REVERSE)
 {
-    physicalRobot = 0;
+    physicalRobot = robotNum;
     // corresponding pin values on teensy
-    if (physicalRobot == 0)
+    if (robotNum == 0)
     {
         pinspeedFR = 4;
         pinspeedRR = 3;
@@ -113,11 +113,16 @@ void Motor::Move(double intended_angle, double motor_power, double initialOrient
     speedRL = abs(powerRL);
     int multiplier = 255;
 
+    if(motor_power > 1){
+        motor_power = 1;
+    }
+    else if(motor_power < 0){
+        motor_power = 0;
+    }
     int intspeedFR = (int)((speedFR * multiplier) * motor_power);
     int intspeedFL = (int)((speedFL * multiplier) * motor_power);
     int intspeedRR = (int)((speedRR * multiplier) * motor_power);
     int intspeedRL = (int)((speedRL * multiplier) * motor_power);
-
     if (defenseStop)
     {
         Stop();
@@ -217,12 +222,12 @@ double Motor::FindCorrection(double orientation, double initialOrientation)
     Serial.println(correction);
     return correction;
 }
-void Motor::motorFL(int control, int speed){
+void Motor::motorFL(double control, int speed){
     if (physicalRobot == 0){
         controlFL = control > 0 ? LOW : HIGH;
     }
     else{
-        controlFL = powerFL < 0 ? LOW : HIGH;
+        controlFL = control < 0 ? LOW : HIGH;
     }
     if (controlFL == LOW)
     {
@@ -238,7 +243,7 @@ void Motor::motorFL(int control, int speed){
     digitalWrite(pincontrolFLA, controlFLA);
     digitalWrite(pincontrolFLB, controlFLB);
 }
-void Motor::motorFR(int control, int speed){
+void Motor::motorFR(double control, int speed){
     if (physicalRobot == 0){
         controlFR = control > 0 ? LOW : HIGH;
     }
@@ -259,7 +264,7 @@ void Motor::motorFR(int control, int speed){
     digitalWrite(pincontrolFRA, controlFRA);
     digitalWrite(pincontrolFRB, controlFRB);
 }
-void Motor::motorRR(int control, int speed){
+void Motor::motorRR(double control, int speed){
     if (physicalRobot == 0){
         controlRR = control > 0 ? LOW : HIGH;
     }
@@ -280,12 +285,12 @@ void Motor::motorRR(int control, int speed){
     digitalWrite(pincontrolRRA, controlRRA);
     digitalWrite(pincontrolRRB, controlRRB);
 }
-void Motor::motorRL(int control, int speed){
+void Motor::motorRL(double control, int speed){
     if (physicalRobot == 0){
-        controlRL = powerRL > 0 ? LOW : HIGH;
+        controlRL = control > 0 ? LOW : HIGH;
     }
     else{
-        controlRL = powerRL < 0 ? LOW : HIGH;
+        controlRL = control < 0 ? LOW : HIGH;
     }
     if (controlRL == LOW)
     {
@@ -304,71 +309,49 @@ void Motor::motorRL(int control, int speed){
 
 bool Motor::spin(int target)
 {
-    int orientation = getOrientation();
-    int angleDiff = abs(orientation - target);
-    bool obtuse = false;
-    if (angleDiff > 180)
-    {
-        angleDiff = 360 - angleDiff;
-        obtuse = true;
-    }
-    if (obtuse && target < 180 && orientation > 180)
-    {
-        orientation = -1 * (360 - orientation);
-    }
-    else if (obtuse && target > 180 && orientation < 180)
-    {
-        orientation = (orientation + 360);
-    }
-    if (orientation < target)
-    {
-        angleDiff = -1 * angleDiff;
-    }
-    if (angleDiff < 5)
-    {
+    if(target > 350 || target < 10){
         return true;
     }
-    spinMotors(angleDiff);
+    if(target > 180){
+        target = -1;
+    }
+    else{
+        target = 1;
+    }
+    spinMotors(target);
     return false;
 }
-void Motor::spinMotors(int direction)
+void Motor::spinMotors(double direction)
 {
-    motorFL(direction,50);
-    motorFR(direction,50);
-    motorRR(direction,50);
-    motorRL(direction,50);
+    motorFL(direction,25);
+    motorFR(direction,25);
+    motorRR(direction,25);
+    motorRL(direction,25);
 }
 
-double Motor::speedControl(int ballDist, double initialSpeed, int stopAngle)
+double Motor::speedControl(int ballDist, double initialSpeed, int role)
 {
-    if (!switches.start() || ballDist == -5)
+    if (!(switches.start()) || ballDist == -5 || role == 0)
     {
-        currentSpeed = 0;
-        stopTimer = 0;
+        currentSpeed = initialSpeed;
         speedTimer = 0;
-    }
-    if(currentSpeed < initialSpeed){
-        currentSpeed = min(initialSpeed, ((pow((3.33 * (stopTimer / 1000) + 1), 2)) / 100.0));
-        return currentSpeed;
+        return initialSpeed;
     }
     else if (currentSpeed > initialSpeed && ballDist < 70)
     {
         currentSpeed = initialSpeed;
         speedTimer = 0;
-        stopTimer = 0;
         return initialSpeed;
     }
-    else if (ballDist >= 70 && switches.start())
+    else if (ballDist >= 70)
     {
-        initialSpeed += min(1-initialSpeed,((pow((3.33 * (speedTimer / 1000) + 1), 2)) / 100.0));
         currentSpeed = initialSpeed;
-        stopTimer = 0;
-        return initialSpeed;
+        currentSpeed += min(1-initialSpeed,((pow((3.33 * (speedTimer / 1000.0)), 2)) / 100.0));
+        return currentSpeed;
     }
     else
     {
         speedTimer = 0;
-        stopTimer = 0;
         return initialSpeed;
     }
 }

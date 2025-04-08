@@ -12,14 +12,14 @@ class Motor
 {
 
 public:
-  Motor();
+  Motor(int robotNum);
   void Move(double intended_angle, double motor_power, double robotOrientation);
   void Stop();
   double RecordDirection();
   double FindCorrection(double orientation, double robotOrientation);
   double getOrientation();
   bool spin(int target);
-  double speedControl(int ballDist, double initialSpeed, int stopAngle);
+  double speedControl(int ballDist, double initialSpee, int role);
   CompassSensor compassSensor;
   int dirAngle;
   double correction;
@@ -30,11 +30,11 @@ public:
   PID myPID;
 
 private:
-  void spinMotors(int direction);
-  void motorFR(int control, int speed);
-  void motorRR(int control, int speed);
-  void motorRL(int control, int speed);
-  void motorFL(int control, int speed);
+  void spinMotors(double direction);
+  void motorFR(double control, int speed);
+  void motorRR(double control, int speed);
+  void motorRL(double control, int speed);
+  void motorFL(double control, int speed);
   double max_power;
   double powerFR;
   double powerFL;
@@ -87,7 +87,6 @@ private:
   double currentSpeed;
   double Setpoint, Input, Output;
   elapsedMillis speedTimer;
-  elapsedMillis stopTimer;
   int physicalRobot;
 
 };

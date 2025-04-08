@@ -7,6 +7,10 @@ Localization::Localization()
     fieldYDistWithGoal = 215;
     goalPos = 100;
     correctionThreshold = 20;
+    cameraXCoord = -5;
+    cameraYCoord = -5;
+    robotX = -5;
+    robotY = -5;
 }
 int Localization::getRobotX()
 {
@@ -16,9 +20,8 @@ int Localization::getRobotY()
 {
     return robotY;
 }
-int *Localization::absoluteBallPos(int ballAngle, int ballDist)
+int* Localization::absoluteBallPos(int ballAngle, int ballDist)
 {
-    int absolutePos[2];
     if (ballAngle == -5)
     {
         absolutePos[0] = -5;
@@ -29,10 +32,10 @@ int *Localization::absoluteBallPos(int ballAngle, int ballDist)
     int y = robotY + cos(toRadians(ballAngle)) * ballDist;
     absolutePos[0] = x;
     absolutePos[1] = y;
-    Serial.print("BallX: ");
-    Serial.println(x);
-    Serial.print("BallY: ");
-    Serial.println(y);
+    // Serial.print("BallX: ");
+    // Serial.println(x);
+    // Serial.print("BallY: ");
+    // Serial.println(y);
     return absolutePos;
 }
 void Localization::offenseLocalization(double correction, int awayGoal, int homeGoal)
@@ -220,8 +223,6 @@ void Localization::cameraLocalization(int homeGoal, int awayGoal, int correction
     {
         awayGoal += 360;
     }
-    Serial.println(awayGoal);
-    Serial.println(homeGoal);
     double awaySlope = 1 / tan(toRadians(awayGoal));
     double homeSlope = 1 / tan(toRadians(homeGoal));
     int awayGoalPos = goalPos;

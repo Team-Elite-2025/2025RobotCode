@@ -6,8 +6,6 @@ Defense::Defense()
 
 int Defense::defenseCalc(int ballAngle, int goalAngle, int ballDistance, int correction)
 {
-    Serial.print("Orientation Val: ");
-    Serial.println(correction);
     int rotatedBall = ballAngle + correction;
     int rotatedGoal = goalAngle + correction;
     if (rotatedBall >= 360)
@@ -28,8 +26,6 @@ int Defense::defenseCalc(int ballAngle, int goalAngle, int ballDistance, int cor
     }
     angleThreshold = max(15, -0.18 * ballDistance + 40);
     angleThreshold = 180 - angleThreshold;
-    Serial.print("Threshold; ");
-    Serial.println(angleThreshold);
     angleDiff = abs(ballAngle - goalAngle);
     if (angleDiff > 180)
     {
@@ -49,8 +45,10 @@ int Defense::defenseCalc(int ballAngle, int goalAngle, int ballDistance, int cor
                 defenseAngle += 360;
             }
         }
-        else
+        else{
+            hardStop = 200;
             defenseAngle = -1;
+        }
     }
     else
     {
@@ -113,5 +111,7 @@ int Defense::defenseOrientation(int goalAngle, int orientation, int initialOrien
         theoreticalDir = calculation.complimentaryFilterAngle(theoreticalDir, previousGoalAngle, 0.5);
         previousGoalAngle = theoreticalDir;
     }
+    Serial.println("Defense orientation: ");
+    Serial.println(theoreticalDir);
     return theoreticalDir;
 }
