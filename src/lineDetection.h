@@ -18,18 +18,19 @@ public:
     double Chord();
     bool outOfBounds;
     bool lineSwitch;
+    double sensorAngles[24];
+
 
 private:
     int *lineValues;
     MCP3008 adc1;
     MCP3008 adc2;
     MCP3008 adc3;
-    MCP3008 adc4;
-    MCP3008 adc5;
-    MCP3008 adc6;
-    double sensorAngles[48];
-    double sinValues[48];
-    double cosValues[48];
+    // MCP3008 adc4;
+    // MCP3008 adc5;
+    // MCP3008 adc6;
+    double sinValues[24];
+    double cosValues[24];
     int sensorAngle;
     int currentAngle;
     int angleDiff;

@@ -3,20 +3,17 @@
 
 Switch::Switch()
 {
-    pinMode(ledPin, OUTPUT);
-    pinMode(recieverPin, INPUT);
-    analogWriteFrequency(ledPin, 38000);
-    delay(100);
-    analogWrite(ledPin, 127);
     pinMode(31, INPUT);
     pinMode(40, INPUT);
     pinMode(38, INPUT);
     pinMode(36, INPUT);
+    pinMode(41, INPUT);
+    digitalWrite(41, HIGH);
+    delay(100);
 }
 
 bool Switch::start()
 {
-    // if (digitalRead(31) == HIGH && digitalRead(17) == HIGH)
     if (digitalRead(31) == HIGH)
     {
         return true;
@@ -25,7 +22,7 @@ bool Switch::start()
 }
 bool Switch::switchSide()
 {
-    if (digitalRead(40) == HIGH)
+    if (digitalRead(38) == HIGH)
     {
         return true;
     }
@@ -33,7 +30,7 @@ bool Switch::switchSide()
 }
 bool Switch::kickoff()
 {
-    if (digitalRead(38) == HIGH)
+    if (digitalRead(40) == HIGH)
     {
         return true;
     }
@@ -50,8 +47,8 @@ bool Switch::calibration()
 bool Switch::lightgate()
 {
     Serial.print("Lightgate: ");
-    Serial.println(analogRead(recieverPin));
-    if (analogRead(recieverPin) < 700)
+    Serial.println(digitalRead(41));
+    if (digitalRead(41))
     {
         return false;
     }

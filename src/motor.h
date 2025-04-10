@@ -28,13 +28,18 @@ public:
   double initialOrientation = 0;
   double orientationVal;
   PID myPID;
-
-private:
-  void spinMotors(double direction);
   void motorFR(double control, int speed);
   void motorRR(double control, int speed);
   void motorRL(double control, int speed);
   void motorFL(double control, int speed);
+  void spinMotors(double direction);
+
+
+private:
+  
+  
+  
+  
   double max_power;
   double powerFR;
   double powerFL;

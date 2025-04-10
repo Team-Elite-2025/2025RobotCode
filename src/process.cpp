@@ -6,6 +6,7 @@ Process::Process(int physicalRobot):roleSwitch(physicalRobot), motor(physicalRob
 
 void Process::general(int role)
 {
+    Serial.println("beign general");
     orientation = motor.getOrientation();
     calbiration.calState(motor, lineDetection);
     lineAngle = lineDetection.Process(calbiration.calVal, orientation, motor.initialOrientation);
@@ -29,15 +30,17 @@ void Process::general(int role)
     if(role == 1){
         esc.runDribbler(cam.ball,cam.ballDistance,switches.lightgate());
 }
+    Serial.println("Nigger end");
 }
 void Process::offense(double motorPower)
 {
     goal.kickBackground();
+    Serial.println("run general");
     general(1);
-    motorPower = motor.speedControl(cam.ballDistance,motorPower, 1);
+    // motorPower = motor.speedControl(cam.ballDistance,motorPower, 1);
     if (lineDetection.linepresent && (lineDetection.Chord() > 0.2 || motorPower > 0.2))
     {
-        motor.Move(lineAngle, 0.2, getOrientationOffense());
+        motor.Move(lineAngle, 0.2, motor.initialOrientation);
     }
     else
     {
@@ -51,6 +54,8 @@ void Process::offense(double motorPower)
             // }
             // else{
                 smoothMove(orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime), lineAngle, motorPower, getOrientationOffense());
+                // motor.Move(orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime), motorPower, motor.initialOrientation);
+
             // }
         }
     }
@@ -101,14 +106,14 @@ void Process::smoothMove(int moveAngle, int lineAngle, double motorPower, int or
     }
 }
 
-double Process::getHomeGoal()
+double Process::getAwayGoal()
 {
     if (switches.switchSide())
         return cam.yellowGoal;
     else
         return cam.blueGoal;
 }
-double Process::getAwayGoal()
+double Process::getHomeGoal()
 {
     if (switches.switchSide())
         return cam.blueGoal;
@@ -119,11 +124,11 @@ int Process::getOrientationOffense()
 {
     if (switches.lightgate())
     {
-        return goal.scoreOrientation(orientation, getAwayGoal(), motor.initialOrientation);
+        return goal.scoreOrientation(orientation, getHomeGoal(), motor.initialOrientation);
     }
-    int ballCheck = goal.ballAngleCheck(cam.ball, motor.initialOrientation, orientation);
-    if (cam.ballDistance < 60 && (ballCheck < 70 || ballCheck > 290))
-        return goal.scoreOrientation(orientation, getAwayGoal(), motor.initialOrientation);
+    // int ballCheck = goal.ballAngleCheck(cam.ball, motor.initialOrientation, orientation);
+    // if (cam.ballDistance < 60 && (ballCheck < 70 || ballCheck > 290))
+    //     return goal.scoreOrientation(orientation, getAwayGoal(), motor.initialOrientation);
     else
         return motor.initialOrientation;
 }

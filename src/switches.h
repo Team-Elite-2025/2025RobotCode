@@ -13,7 +13,6 @@ public:
     bool lightgate();
 
 private:
-    int ledPin = 0;
     int recieverPin = 41;
 };
 #endif

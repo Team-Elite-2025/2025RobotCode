@@ -6,7 +6,11 @@ double motorPower;
 //0 = no voltmeter
 Process process(1);
 CompassSensor compassSensor;
-
+Motor motor(1);
+Switch switches;
+Cam cam;
+Localization local;
+// Calibration cal;
 void setup()
 {
   Serial.begin(19200);
@@ -19,13 +23,27 @@ void setup()
 void loop()
 {
   // if (process.roleSwitch.getOurRole() == 1){
-    motorPower = 0.2;
-    process.offense(motorPower);
+    // motorPower = 0.2;
+    // process.offense(motorPower);
+    // while(switches.calibration()) {
+    //   motor.initialOrientation = compassSensor.getOrientation();
+    //   Serial.println("calibrating");
+    // } if (!switches.calibration()) {
+    //   motor.Move(45, .2, motor.initialOrientation);
+    // } else {
+    //   motor.Stop();
+    // }
+    // motor.spinMotors(-1);
   // }
   // else{
   //   motorPower = 0.35;
   //   process.defense(motorPower);
   // }
+  // motor.motorFL(1, 100);
+  
+  // cam.CamCalc();
+  // local.offenseLocalization(0, cam.yellowGoal, cam.blueGoal);
+  process.offense(0.2);
 
   // delay(500);
 }

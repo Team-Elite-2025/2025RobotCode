@@ -3,43 +3,39 @@
 #include <math.h>
 #include <string.h>
 
-Motor::Motor(int robotNum) : myPID(&Input, &Output, &Setpoint, 0.35, 0, 0.00005, REVERSE)
+Motor::Motor(int robotNum) : myPID(&Input, &Output, &Setpoint, .35, 0, 0.00005, REVERSE)
 {
     physicalRobot = robotNum;
     // corresponding pin values on teensy
     if (robotNum == 0)
     {
-        pinspeedFR = 4;
-        pinspeedRR = 3;
-        pinspeedFL = 2;
-        pinspeedRL = 5;
-
-        pincontrolFRA = 18;
-        pincontrolRRA = 20;
-        pincontrolFLA = 22;
-        pincontrolRLA = 9;
-
-        pincontrolFRB = 19;
-        pincontrolRRB = 21;
-        pincontrolFLB = 23;
-        pincontrolRLB = 10;
+        pincontrolRLA = 22;
+        pincontrolRLB = 23;
+        pinspeedRL = 2;
+        pincontrolFRA = 20;
+        pincontrolFRB = 21;
+        pinspeedFR = 3;
+        pincontrolFLA = 18;
+        pincontrolFLB = 19;
+        pinspeedFL = 4;
+        pincontrolRRA = 9;
+        pincontrolRRB = 10;
+        pinspeedRR = 5;
     }
     else
     {
-        pinspeedFR = 4;
-        pinspeedRR = 3;
-        pinspeedRL = 2;
-        pinspeedFL = 5;
-
-        pincontrolFRA = 18;
-        pincontrolRRA = 20;
         pincontrolRLA = 22;
-        pincontrolFLA = 9;
-
-        pincontrolFRB = 19;
-        pincontrolRRB = 21;
         pincontrolRLB = 23;
-        pincontrolFLB = 10;
+        pinspeedRL = 2;
+        pincontrolFRA = 20;
+        pincontrolFRB = 21;
+        pinspeedFR = 3;
+        pincontrolFLA = 18;
+        pincontrolFLB = 19;
+        pinspeedFL = 4;
+        pincontrolRRA = 9;
+        pincontrolRRB = 10;
+        pinspeedRR = 5;
     }
 
     defenseStop = false;
@@ -77,10 +73,10 @@ void Motor::Move(double intended_angle, double motor_power, double initialOrient
     controlFL = 0;
     controlRL = 0;
 
-    powerFR = sin(toRadians(intended_angle - 52));
-    powerRR = sin(toRadians(intended_angle - 128));
-    powerRL = sin(toRadians(intended_angle - 232));
-    powerFL = sin(toRadians(intended_angle - 308));
+    powerFR = sin(toRadians(intended_angle - 55));
+    powerRR = sin(toRadians(intended_angle - 125));
+    powerRL = sin(toRadians(intended_angle - 235));
+    powerFL = sin(toRadians(intended_angle - 305));
     // find max_power among motors to scale
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
     FindCorrection(compassSensor.getOrientation(), initialOrientation);
@@ -227,7 +223,7 @@ void Motor::motorFL(double control, int speed){
         controlFL = control > 0 ? LOW : HIGH;
     }
     else{
-        controlFL = control < 0 ? LOW : HIGH;
+        controlFL = control < 0 ? HIGH : LOW;
     }
     if (controlFL == LOW)
     {
@@ -245,10 +241,10 @@ void Motor::motorFL(double control, int speed){
 }
 void Motor::motorFR(double control, int speed){
     if (physicalRobot == 0){
-        controlFR = control > 0 ? LOW : HIGH;
+        controlFR = control > 0 ? HIGH : LOW;
     }
     else{
-        controlFR = control > 0 ? LOW : HIGH;
+        controlFR = control < 0 ? HIGH : LOW;
     }
     if (controlFR == LOW)
     {
@@ -269,7 +265,7 @@ void Motor::motorRR(double control, int speed){
         controlRR = control > 0 ? LOW : HIGH;
     }
     else{
-        controlRR = control > 0 ? LOW : HIGH;
+        controlRR = control > 0 ? HIGH : LOW;
     }
     if (controlRR == LOW)
     {
@@ -290,7 +286,7 @@ void Motor::motorRL(double control, int speed){
         controlRL = control > 0 ? LOW : HIGH;
     }
     else{
-        controlRL = control < 0 ? LOW : HIGH;
+        controlRL = control < 0 ? HIGH : LOW;
     }
     if (controlRL == LOW)
     {

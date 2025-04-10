@@ -5,25 +5,25 @@
 LineDetection::LineDetection()
 {
     // Constructor
-    lineValues = new int[48];
-    adc1.begin(32, 11, 12, 13);
-    adc2.begin(1, 11, 12, 13);
-    adc3.begin(26, 11, 12, 13);
-    adc4.begin(27, 11, 12, 13);
-    adc5.begin(14, 11, 12, 13);
-    adc6.begin(15, 11, 12, 13);
+    lineValues = new int[24];
+    adc1.begin(14, 11, 12, 13);
+    adc2.begin(15, 11, 12, 13);
+    adc3.begin(16, 11, 12, 13);
+    // adc4.begin(27, 11, 12, 13);
+    // adc5.begin(14, 11, 12, 13);
+    // adc6.begin(15, 11, 12, 13);
     int counter = 0;
-    for (int i = 22; i < 48; i++)
+    for (int i = 23; i >= 0; i--)
     {
-        sensorAngles[i] = counter * 7.5;
+        sensorAngles[i] = counter * 15 + 7;
         counter++;
-    }
-    for (int i = 0; i < 22; i++)
-    {
-        sensorAngles[i] = counter * 7.5;
-        counter++;
-    }
-    for (int i = 0; i < 48; i++)
+    } 
+    // for (int i=0; i<18; i++) {
+    //     sensorAngles[i] = counter * 15;
+    //     counter++;
+    // }
+    
+    for (int i = 0; i < 24; i++)
     {
         cosValues[i] = cos(toRadians(sensorAngles[i]));
         sinValues[i] = sin(toRadians(sensorAngles[i]));
@@ -35,7 +35,7 @@ LineDetection::LineDetection()
 
 int *LineDetection::GetValues()
 {
-    for (int i = 0; i < 48; i++)
+    for (int i = 0; i < 24; i++)
     {
         int adcNumber = i / 8;
         int val = 0;
@@ -52,24 +52,32 @@ int *LineDetection::GetValues()
         case (2):
             val = adc3.analogRead(channel);
             break;
-        case (3):
-            val = adc4.analogRead(channel);
-            break;
-        case (4):
-            val = adc5.analogRead(channel);
-            break;
-        case (5):
-            val = adc6.analogRead(channel);
-            break;
         default:
             break;
         }
         lineValues[i] = val;
     }
-    for(int i = 0; i < 48; i++){
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(lineValues[i]);
+    for(int i = 0; i < 24; i++){
+        if(lineValues[i] < 5 || lineValues[i]>1020){
+            int after;
+            int before;
+            if(i+1 == 24){
+                after = lineValues[0];
+            }
+            else{
+                after = lineValues[i+1];
+            }
+            if(i-1 == -1){
+                before = lineValues[23];
+            }
+            else{
+                before = lineValues[i-1];
+            }
+            lineValues[i] = (before + after)/2;
+        }
+        // Serial.print(i);
+        // Serial.print(": ");
+        // Serial.println(lineValues[i]);
     }
     return lineValues;
 };
@@ -80,12 +88,8 @@ double LineDetection::GetAngle(int *calibrateVal)
     linepresent = false;
     double totalCos = 0;
     double totalSin = 0;
-    // for(int i = 0; i < 8; i++){
-    //     Serial.print(i);
-    //     Serial.print(": ");
-    //     Serial.println(calibrateVal[i]);
-    // }
-    for (int i = 0; i < 48; i++)
+
+    for (int i = 0; i < 24; i++)
     {
         if (lineValues[i] < calibrateVal[i] + 40)
         {
@@ -99,11 +103,12 @@ double LineDetection::GetAngle(int *calibrateVal)
             dotProduct[i] = sensorAngles[i];
         }
     }
+
     double lowestDot = 2;
     int firstAngle = 0, secondAngle = 0;
-    for (int i = 0; i < 48; i++)
+    for (int i = 0; i < 24; i++)
     {
-        for (int j = 0; j < 48; j++)
+        for (int j = 0; j < 24; j++)
         {
             if (dotProduct[i] != 0 && dotProduct[j] != 0)
             {
@@ -117,7 +122,7 @@ double LineDetection::GetAngle(int *calibrateVal)
             }
         }
     }
-    
+
     totalCos = cosValues[firstAngle] + cosValues[secondAngle];
     totalSin = sinValues[firstAngle] + sinValues[secondAngle];
 
@@ -149,6 +154,8 @@ double LineDetection::Process(int *calibrateVal, int orientation, int initialOri
 {
     // MAKE SURE YOU CALL THE PREVIOUS METHOD OTHERWISE NOTHING HAPPENS
     GetAngle(calibrateVal);
+    Serial.print("Line Angle: ");
+    Serial.println(anglebisc);
     if (linepresent == true)
     {
 
