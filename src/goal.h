@@ -11,7 +11,7 @@ class Goal
 public:
     Goal();
     int scoreOrientation(int orientation, int goalAngle, int initialOrientation);
-    void kickAllowed(int y, int correction);
+    void kickAllowed(int y, int correction, int goalAngle);
     void kickBackground();
     int ballAngleCheck(int ballAngle, int initialOrientation, int orientation);
 
@@ -19,6 +19,7 @@ private:
     int kickerPin;
     elapsedMillis timer;
     elapsedMillis active;
+    elapsedMillis lightgateHold;
     int kickHold;
     Switch switches;
     Ultrasonic ultrasonic;

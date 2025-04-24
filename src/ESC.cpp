@@ -7,14 +7,14 @@ ESC::ESC()
     tick2 = 0;
     gradspeed1 = 0;
     gradspeed2 = 0;
-    pinMode(motorPin, OUTPUT);
+    // pinMode(motorPin, OUTPUT);
     threshold = 60;
     isTakeBack = false;
 }
 
 void ESC::dribbler(int speed)
 {
-    analogWrite(motorPin, speed);
+    // analogWrite(motorPin, speed);
 }
 void ESC::runDribbler(double ballAngle, double dist, bool capture)
 {

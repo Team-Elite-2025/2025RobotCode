@@ -75,9 +75,9 @@ int *LineDetection::GetValues()
             }
             lineValues[i] = (before + after)/2;
         }
-        // Serial.print(i);
-        // Serial.print(": ");
-        // Serial.println(lineValues[i]);
+        Serial.print(i);
+        Serial.print(": ");
+        Serial.println(lineValues[i]);
     }
     return lineValues;
 };

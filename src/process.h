@@ -43,7 +43,7 @@ private:
     double getHomeGoal();
     double getAwayGoal();
     void smoothMove(int moveAngle, int lineAngle, double motorPower, int orientation);
-    int getOrientationOffense();
+    int getOrientationOffense(double moveAngle);
     void general(int role);
     int lineAngle;
     int orientation;

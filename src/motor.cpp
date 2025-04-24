@@ -9,18 +9,18 @@ Motor::Motor(int robotNum) : myPID(&Input, &Output, &Setpoint, .35, 0, 0.00005, 
     // corresponding pin values on teensy
     if (robotNum == 0)
     {
-        pincontrolRLA = 22;
-        pincontrolRLB = 23;
-        pinspeedRL = 2;
+        pincontrolRRA = 22;
+        pincontrolRRB = 23;
+        pinspeedRR = 2;
         pincontrolFRA = 20;
         pincontrolFRB = 21;
         pinspeedFR = 3;
         pincontrolFLA = 18;
         pincontrolFLB = 19;
         pinspeedFL = 4;
-        pincontrolRRA = 9;
-        pincontrolRRB = 10;
-        pinspeedRR = 5;
+        pincontrolRLA = 9;
+        pincontrolRLB = 10;
+        pinspeedRL = 5;
     }
     else
     {
@@ -53,6 +53,7 @@ Motor::Motor(int robotNum) : myPID(&Input, &Output, &Setpoint, .35, 0, 0.00005, 
     pinMode(pincontrolFRB, OUTPUT);
     pinMode(pincontrolRRB, OUTPUT);
     pinMode(pincontrolRLB, OUTPUT);
+    pinMode(6, OUTPUT);
     max_power = 0;
 
     // PID Loop
@@ -129,10 +130,13 @@ void Motor::Move(double intended_angle, double motor_power, double initialOrient
         motorFL(powerFL, intspeedFL);
         motorRR(powerRR, intspeedRR);
         motorRL(powerRL, intspeedRL);
+        analogWrite(6, 255);
     }
     else
     {
         Stop();
+        analogWrite(6, 0);
+
     }
 }
 
@@ -142,6 +146,7 @@ void Motor::Stop()
     analogWrite(pinspeedFL, 0);
     analogWrite(pinspeedRR, 0);
     analogWrite(pinspeedRL, 0);
+    analogWrite(6, 0);
     digitalWrite(pincontrolFLA, HIGH);
     digitalWrite(pincontrolFLB, HIGH);
     digitalWrite(pincontrolFRA, HIGH);
@@ -220,7 +225,7 @@ double Motor::FindCorrection(double orientation, double initialOrientation)
 }
 void Motor::motorFL(double control, int speed){
     if (physicalRobot == 0){
-        controlFL = control > 0 ? LOW : HIGH;
+        controlFL = control < 0 ? LOW : HIGH;
     }
     else{
         controlFL = control < 0 ? HIGH : LOW;
@@ -262,7 +267,7 @@ void Motor::motorFR(double control, int speed){
 }
 void Motor::motorRR(double control, int speed){
     if (physicalRobot == 0){
-        controlRR = control > 0 ? LOW : HIGH;
+        controlRR = control < 0 ? LOW : HIGH;
     }
     else{
         controlRR = control > 0 ? HIGH : LOW;
@@ -283,7 +288,7 @@ void Motor::motorRR(double control, int speed){
 }
 void Motor::motorRL(double control, int speed){
     if (physicalRobot == 0){
-        controlRL = control > 0 ? LOW : HIGH;
+        controlRL = control > 0 ? HIGH : LOW;
     }
     else{
         controlRL = control < 0 ? HIGH : LOW;

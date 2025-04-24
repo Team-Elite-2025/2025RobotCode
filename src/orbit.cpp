@@ -3,7 +3,7 @@
 Orbit::Orbit(int robotNum)
 {
     if(robotNum == 1){
-        kd = 0.2;
+        kd = 0.3;
     }
     else{
         kd = 0.3;
@@ -48,8 +48,8 @@ double Orbit::CalculateRobotAngle(double ballAngle, double distance, double deri
     double orbitValue;
 
 
-    if(physicalRobot == 0){ //no voltmeter
-        orbitValue = min(90, 8 * exp(0.033 * newballAngle));
+    if(physicalRobot == 1){ // offense
+        orbitValue = min(90, 16 * exp(0.033 * newballAngle));
     }
     else{ //voltmeter
         orbitValue = min(90, 8 * exp(0.033 * newballAngle));

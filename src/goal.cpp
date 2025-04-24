@@ -48,6 +48,7 @@ int Goal::scoreOrientation(int orientation, int goalAngle, int initialOrientatio
     }
     else
     {
+        // goalAngle = -1 * goalAngle;
 
         if (goalAngle > 180)
             goalAngle -= 360;
@@ -94,9 +95,9 @@ void Goal::kickBackground()
         digitalWrite(kickerPin, LOW);
     }
 }
-void Goal::kickAllowed(int y, int correction)
+void Goal::kickAllowed(int y, int correction, int goalAngle)
 {
-    if (switches.lightgate() && (correction <= 20 && correction >= -20 ))
+    if (switches.lightgate() && ((goalAngle > 350 && goalAngle < 360) || (goalAngle < 10 && goalAngle > 0)))
     {
         kick();
     }

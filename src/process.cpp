@@ -2,6 +2,7 @@
 
 Process::Process(int physicalRobot):roleSwitch(physicalRobot), motor(physicalRobot), orbit(physicalRobot)
 {
+
 }
 
 void Process::general(int role)
@@ -29,8 +30,7 @@ void Process::general(int role)
     //     cam.ballNotFound(bluetooth.getXCoord(), bluetooth.getYCoord(),localization.getRobotX(), localization.getRobotY());
     if(role == 1){
         esc.runDribbler(cam.ball,cam.ballDistance,switches.lightgate());
-}
-    Serial.println("Nigger end");
+    }
 }
 void Process::offense(double motorPower)
 {
@@ -38,6 +38,7 @@ void Process::offense(double motorPower)
     Serial.println("run general");
     general(1);
     // motorPower = motor.speedControl(cam.ballDistance,motorPower, 1);
+    double offenseOrientation=0;
     if (lineDetection.linepresent && (lineDetection.Chord() > 0.2 || motorPower > 0.2))
     {
         motor.Move(lineAngle, 0.2, motor.initialOrientation);
@@ -53,13 +54,15 @@ void Process::offense(double motorPower)
             //     smoothMove(esc.takeBack(cam.ball,getAwayGoal(),orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime),motor.orientationVal, motor), lineAngle, 0.1, motor.initialOrientation);
             // }
             // else{
-                smoothMove(orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime), lineAngle, motorPower, getOrientationOffense());
+                double moveAngle = orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime);
+                offenseOrientation = getOrientationOffense(moveAngle);
+                smoothMove(moveAngle, lineAngle, motorPower, offenseOrientation);
                 // motor.Move(orbit.CalculateRobotAngle(cam.ball, cam.ballDistance, cam.derivative, cam.sampleTime), motorPower, motor.initialOrientation);
 
             // }
         }
     }
-    goal.kickAllowed(localization.getRobotY(), motor.orientationVal);
+    goal.kickAllowed(localization.getRobotY(), motor.orientationVal- offenseOrientation, getAwayGoal());
 }
 
 void Process::defense(double motorPower)
@@ -75,7 +78,8 @@ void Process::defense(double motorPower)
     {
         if (cam.ball == -5)
         {
-            smoothMove(orbit.GetToPosition(0, -60, localization.getRobotX(), localization.getRobotY()), lineAngle, motorPower, motor.initialOrientation);
+            // smoothMove(orbit.GetToPosition(0, -60, localization.getRobotX(), localization.getRobotY()), lineAngle, motorPower, motor.initialOrientation);
+            motor.Stop();
         }
         else
         {
@@ -93,12 +97,13 @@ void Process::smoothMove(int moveAngle, int lineAngle, double motorPower, int or
 
     if (moveAngle == -1)
     {
-        goal.kickAllowed(50, 0);
+        goal.kickAllowed(50, 0, 0);
         motor.Stop();
     }
     else if (lineDetection.linepresent)
     {
-        motor.Move(calculation.projectionCalc(lineAngle, moveAngle), motorPower, orientation);
+        // motor.Move(calculation.projectionCalc(lineAngle, moveAngle), motorPower, orientation);
+        motor.Move(calculation.projectionCalc(lineAngle, moveAngle), 0.2, orientation);
     }
     else if(moveAngle >= 0)
     {
@@ -120,15 +125,15 @@ double Process::getHomeGoal()
     else
         return cam.yellowGoal;
 }
-int Process::getOrientationOffense()
+int Process::getOrientationOffense(double moveAngle)
 {
-    if (switches.lightgate())
+    if (switches.lightgate() || (cam.ballDistance <= 25 && ((moveAngle > 0 && moveAngle < 10) || (moveAngle > 350 && moveAngle < 360))))
     {
-        return goal.scoreOrientation(orientation, getHomeGoal(), motor.initialOrientation);
+        return goal.scoreOrientation(orientation, getAwayGoal(), motor.initialOrientation);
     }
     // int ballCheck = goal.ballAngleCheck(cam.ball, motor.initialOrientation, orientation);
     // if (cam.ballDistance < 60 && (ballCheck < 70 || ballCheck > 290))
     //     return goal.scoreOrientation(orientation, getAwayGoal(), motor.initialOrientation);
     else
-        return motor.initialOrientation;
+        return goal.scoreOrientation(orientation, getAwayGoal(), motor.correction);
 }
