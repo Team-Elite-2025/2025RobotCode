@@ -70,9 +70,9 @@ void Process::defense(double motorPower)
     general(0);
     goal.kickBackground();
     motorPower = motor.speedControl(cam.ballDistance,motorPower, 0);
-    if (lineDetection.linepresent && (lineDetection.Chord() > 0.2 ))
+    if (lineDetection.linepresent && (lineDetection.Chord() > 0.3 ))
     {
-        motor.Move(lineAngle, motorPower, goalie.defenseOrientation(getHomeGoal(), orientation, motor.initialOrientation));
+        motor.Move(lineAngle, motorPower, motor.initialOrientation);
     }
     else
     {
@@ -86,7 +86,7 @@ void Process::defense(double motorPower)
             // if(localization.getRobotY() > 0)
             //     smoothMove(180, lineAngle, motorPower, goalie.defenseOrientation(getHomeGoal(), orientation, motor.initialOrientation));
             // else
-                smoothMove(goalie.defenseCalc(cam.ball, getHomeGoal(), cam.ballDistance, motor.orientationVal), lineAngle, motorPower, goalie.defenseOrientation(getHomeGoal(), orientation, motor.initialOrientation));
+                smoothMove(goalie.defenseCalc(cam.ball, getHomeGoal(), cam.ballDistance, motor.orientationVal), lineAngle, motorPower, motor.initialOrientation);
         }
     }
 }
@@ -102,8 +102,8 @@ void Process::smoothMove(int moveAngle, int lineAngle, double motorPower, int or
     }
     else if (lineDetection.linepresent)
     {
-        // motor.Move(calculation.projectionCalc(lineAngle, moveAngle), motorPower, orientation);
-        motor.Move(calculation.projectionCalc(lineAngle, moveAngle), 0.2, orientation);
+        motor.Move(calculation.projectionCalc(lineAngle, moveAngle), motorPower, orientation);
+        // motor.Move(calculation.projectionCalc(lineAngle, moveAngle), 0.2, orientation);
     }
     else if(moveAngle >= 0)
     {

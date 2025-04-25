@@ -35,7 +35,7 @@ void loop()
   // analogWrite(6, 255);
   // if (process.roleSwitch.getOurRole() == 1){
   if(robot == 0) {
-    motorPower = 0.3;
+    motorPower = 0.25;
     process.defense(motorPower);
   } else {
     motorPower = 0.2;

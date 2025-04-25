@@ -24,8 +24,8 @@ int Defense::defenseCalc(int ballAngle, int goalAngle, int ballDistance, int cor
     {
         rotatedGoal += 360;
     }
-    angleThreshold = max(15, -0.18 * ballDistance + 40);
     // angleThreshold = max(15, -0.18 * ballDistance + 40);
+    angleThreshold = 10;
     angleThreshold = 180 - angleThreshold;
     angleDiff = abs(ballAngle - goalAngle);
     if (angleDiff > 180)
