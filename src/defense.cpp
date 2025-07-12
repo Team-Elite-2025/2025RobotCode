@@ -54,8 +54,8 @@ int Defense::defenseCalc(int ballAngle, int goalAngle, int ballDistance, int cor
     else
     {
         hardStop = 0;
-        robotAngleX = calculation.getX(ballAngle) + calculation.getX(goalAngle);
-        robotAngleY = calculation.getY(ballAngle) + calculation.getY(goalAngle);
+        robotAngleX = (calculation.getX(ballAngle) + calculation.getX(goalAngle)) * 1.5;
+        robotAngleY = (calculation.getY(ballAngle) + calculation.getY(goalAngle)) * 1.5;
 
         defenseAngle = calculation.getAngle(robotAngleX, robotAngleY);
         int updatedHorizontal = 180 + (-1* correction);
