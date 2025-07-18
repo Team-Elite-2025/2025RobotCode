@@ -8,11 +8,11 @@ Process::Process(int physicalRobot):roleSwitch(physicalRobot), motor(physicalRob
 void Process::general(int role)
 {
     Serial.println("beign general");
-    orientation = motor.getOrientation();
+    // orientation = motor.getOrientation();
     calbiration.calState(motor, lineDetection);
-    lineAngle = lineDetection.Process(calbiration.calVal, orientation, motor.initialOrientation);
+    lineAngle = lineDetection.Process(calbiration.calVal, 0, motor.initialOrientation);
     cam.CamCalc();
-    motor.FindCorrection(motor.getOrientation(), motor.initialOrientation);
+    motor.FindCorrection(0, motor.initialOrientation);
     if(role == 1){
         localization.offenseLocalization(motor.orientationVal, getAwayGoal(), getHomeGoal());
         motor.myPID.SetTunings(0.28, 0, 0.00005);
@@ -129,11 +129,11 @@ int Process::getOrientationOffense(double moveAngle)
 {
     if (switches.lightgate() || (cam.ballDistance <= 25 && ((moveAngle > 0 && moveAngle < 10) || (moveAngle > 350 && moveAngle < 360))))
     {
-        return goal.scoreOrientation(orientation, getAwayGoal(), motor.initialOrientation);
+        return goal.scoreOrientation(0, getAwayGoal(), motor.initialOrientation);
     }
     // int ballCheck = goal.ballAngleCheck(cam.ball, motor.initialOrientation, orientation);
     // if (cam.ballDistance < 60 && (ballCheck < 70 || ballCheck > 290))
     //     return goal.scoreOrientation(orientation, getAwayGoal(), motor.initialOrientation);
     else
-        return goal.scoreOrientation(orientation, getAwayGoal(), motor.correction);
+        return goal.scoreOrientation(0, getAwayGoal(), motor.correction);
 }

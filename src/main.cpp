@@ -6,7 +6,7 @@ double motorPower;
 //0 = Defense
 int robot = 0;
 Process process(robot);
-CompassSensor compassSensor;
+// CompassSensor compassSensor;
 // Motor motor(0);
 // Switch switches;
 // Cam cam;
@@ -19,7 +19,7 @@ void setup()
   Serial2.begin(2000000);
   Serial7.begin(921600);
   // pinMode(6, OUTPUT);
-  compassSensor.calibrate(); 
+  // compassSensor.calibrate();
   // pinMode(21, OUTPUT);
   // pinMode(20, OUTPUT);
   // pinMode(3, OUTPUT);

@@ -5,7 +5,7 @@
 #include <trig.h>
 #include <orbit.h>
 #include <switches.h>
-#include <compassSensor.h>
+// #include <compassSensor.h>
 #include <PID_v1.h>
 
 class Motor
@@ -20,7 +20,7 @@ public:
   double getOrientation();
   bool spin(int target);
   double speedControl(int ballDist, double initialSpee, int role);
-  CompassSensor compassSensor;
+  // CompassSensor compassSensor;
   int dirAngle;
   double correction;
   bool defenseStop;
