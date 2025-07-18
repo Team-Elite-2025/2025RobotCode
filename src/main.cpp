@@ -104,15 +104,16 @@ void loop()
 */
 
 #include <Arduino.h>
-#include <motor.h>
-
-Motor motor(0);
 
 void setup() {
+  Serial.begin(9600);
 }
 
 void loop() {
-  motor.spinMotors(1);
+  if (Serial.available()) {
+    char c = Serial.read();
+    Serial.print(c);
+  }
 }
 
 
