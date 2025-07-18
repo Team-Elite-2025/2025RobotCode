@@ -1,3 +1,4 @@
+/*
 #include <Arduino.h>
 #include <process.h>
 
@@ -100,5 +101,18 @@ void loop()
 
 // }
 
+*/
+
+#include <Arduino.h>
+#include <motor.h>
+
+Motor motor(0);
+
+void setup() {
+}
+
+void loop() {
+  motor.spinMotors(1);
+}
 
 
