@@ -80,7 +80,7 @@ void Motor::Move(double intended_angle, double motor_power, double initialOrient
     powerFL = sin(toRadians(intended_angle - 305));
     // find max_power among motors to scale
     max_power = max(max(abs(powerFR), abs(powerFL)), max(abs(powerRR), abs(powerRL)));
-    FindCorrection(compassSensor.getOrientation(), initialOrientation);
+    FindCorrection(0, initialOrientation);
     // add correction to account for rotation needed
 
     powerFR = powerFR / max_power;
@@ -159,13 +159,13 @@ void Motor::Stop()
 double Motor::RecordDirection()
 {
 
-    initialOrientation = compassSensor.getOrientation();
+    initialOrientation = 0;
     return initialOrientation;
 }
 
 double Motor::getOrientation()
 {
-    return compassSensor.getOrientation();
+    return 0;
 }
 
 double Motor::FindCorrection(double orientation, double initialOrientation)
@@ -221,7 +221,7 @@ double Motor::FindCorrection(double orientation, double initialOrientation)
     }
     Serial.print("correction: ");
     Serial.println(correction);
-    return correction;
+    return 0;
 }
 void Motor::motorFL(double control, int speed){
     if (physicalRobot == 0){
